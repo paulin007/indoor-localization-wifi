@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import dataBase.DatabaseHelper;
-
 import paulin.tchonin.wifilocalization.R;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+import dataBase.DatabaseHelper;
 
 public class WiFiDemo extends Activity implements OnClickListener {
 	private static final String TAG = "WiFiDemo";
@@ -31,6 +33,15 @@ public class WiFiDemo extends Activity implements OnClickListener {
 
 	TextView textStatus;
 	Button buttonScan;
+	
+//	private Paint mPaint;
+//	private float x=400;
+//	private float y=400;
+//	private int r=20;
+
+
+	
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -41,9 +52,63 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		textStatus = (TextView) findViewById(R.id.textStatus);
 		buttonScan = (Button) findViewById(R.id.buttonScan);
 		buttonScan.setOnClickListener(this);
+		
+	
+		
+		      
 
 		// Setup WiFi
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		
+		
+//		mPaint = new Paint(); // 3
+//		mPaint.setColor(0xffff0000);
+//		mPaint.setStrokeWidth(6);
+		
+		
+		
+		
+		
+//		View v = new View(this){
+			
+			
+//			@Override
+//			protected void onDraw(Canvas canvas) {
+//
+//			
+//				canvas.drawCircle(x, y, r, mPaint);
+//				
+//				postInvalidateDelayed(20);
+//			
+////				super.onDraw(canvas);
+//			}
+//		};
+//		v.setBackgroundResource(R.drawable.piano);
+//		Log.d("fuori", "lala");
+//		
+//		
+//		setContentView(v);
+		
+//		OnTouchListener onTouchListener = new OnTouchListener() {
+//			
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+////				 Log.d(TAG, "onTouch!" + event);
+////				 Log.d(TAG, "onTouch!" + event.getAction());
+//				 int action = event.getAction();
+//				 if(action== MotionEvent.ACTION_DOWN|| action == MotionEvent.ACTION_MOVE){
+//						x = event.getX();
+//						y = event.getY();
+//				Log.d(TAG, x+"  "+y);		
+//						
+//					}
+//				return true;
+//			}
+//		};
+//		
+//		v.setOnTouchListener(onTouchListener);
+		
+		
 	}
 	
 

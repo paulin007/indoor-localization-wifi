@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    >
+    android:background="@drawable/piano" >
 
+    <wifi.WifiView 
+        android:id="@+id/game1"
+	    android:layout_width="320dp"
+	    android:layout_height="320dp"
+	    />
+    
+    
+    
     <Button
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
@@ -12,16 +20,17 @@
         android:text="Search Network" >
     </Button>
 
-    <ScrollView
-        android:id="@+id/ScrollView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <TextView
+    <TextView
             android:id="@+id/textStatus"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="WiFiDemo" />
+    <ScrollView
+        android:id="@+id/ScrollView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+     
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>
