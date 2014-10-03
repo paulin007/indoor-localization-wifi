@@ -53,7 +53,7 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 				                              WifiTable.Channel));
 	}
 
-	public void inserisciDatiWifi(int x,int y,String bssid,int frequency,int level,
+	public void inserisciDatiWifi(float x,float y,String bssid,int frequency,int level,
 			Long timestamp,int channel)
 	{
 		ContentValues v = new ContentValues();

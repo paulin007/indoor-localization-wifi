@@ -10,15 +10,17 @@ import android.view.View;
 
 public class WifiView extends View{
 	
-	private float x=400;
-	private float y=400;
+	public static float x=400;
+	public static float y=400;
 	private int r=20;
 	private Paint mPaint;
+	
+	
 
-	public WifiView(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-		init();
-	}
+//	public WifiView(Context context, AttributeSet attrs, int defStyleAttr) {
+//		super(context, attrs, defStyleAttr);
+//		init();
+//	}
 
 	public WifiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -68,5 +70,5 @@ OnTouchListener onTouchListener = new OnTouchListener() {
 		
 		postInvalidateDelayed(20);
 	}
-
+	
 }
