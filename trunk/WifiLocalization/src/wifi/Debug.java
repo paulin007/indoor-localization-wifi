@@ -86,6 +86,12 @@ public class Debug {
          // event is the touch event for MotionEvent.ACTION_UP
          float relativeX = (event.getX() - values[2]) / values[0];
          float relativeY = (event.getY() - values[5]) / values[4];
+         
+         /*
+          * Nota bene: relativeX e relativeY sono i valori da salvare dentro il data base
+          *            e event.geX e event.getY che useremo per disegnare la posizione predetto.
+          *            quindi bisogno risolvere l'equazione averli.
+          */
   
      Log.e("Log value", "position Details: xPos: " + relativeX + " yPos: " + relativeY );
      
