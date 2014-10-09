@@ -3,22 +3,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@drawable/piano" >
+   >
 
     <wifi.WifiView 
         android:id="@+id/game1"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
+	    android:scaleType="matrix"
+	    android:src="@drawable/piano"
 	    />
-    
-    
-    
-    <Button
-        android:id="@+id/buttonScan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search" >
-    </Button>
 
     <TextView
             android:id="@+id/textStatus"
@@ -33,4 +26,22 @@
 
      
     </ScrollView>
+
+    <Button
+        android:id="@+id/buttonCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="46dp"
+        android:layout_toRightOf="@+id/buttonScan"
+        android:text="circle" />
+
+    <Button
+        android:id="@+id/buttonScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Scan" />
+
 </RelativeLayout>
