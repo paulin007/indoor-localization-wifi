@@ -29,6 +29,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 
 	TextView textStatus;
 	Button buttonScan;
+	Button buttonCircle;
 		
 
 	/** Called when the activity is first created. */
@@ -39,7 +40,9 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		// Setup UI
 		textStatus = (TextView) findViewById(R.id.textStatus);
 		buttonScan = (Button) findViewById(R.id.buttonScan);
+		buttonCircle = (Button) findViewById(R.id.buttonCircle);
 		buttonScan.setOnClickListener(this);
+		buttonCircle.setOnClickListener(new buttonListener());
 		
 	
 		
