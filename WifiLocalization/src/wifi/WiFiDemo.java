@@ -9,12 +9,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import dataBase.DatabaseHelper;
 
 public class WiFiDemo extends Activity implements OnClickListener {
@@ -30,6 +32,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	TextView textStatus;
 	Button buttonScan;
 	Button buttonCircle;
+	private int mDelay = 1000;
 		
 
 	/** Called when the activity is first created. */
@@ -43,25 +46,13 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
 		buttonScan.setOnClickListener(this);
 		buttonCircle.setOnClickListener(new buttonListener());
-		
-	
-		
-		      
+			      
 
 		// Setup WiFi
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-				
-		
-
 		
 	}
-	
 
-
-//	@Override
-//	public void onStop() {
-////		unregisterReceiver(receiver);
-//	}
 	
 	@Override
 	protected void onStop() {
@@ -73,8 +64,10 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		if (view.getId() == R.id.buttonScan) {
 			Log.d(TAG, "onClick() wifi.startScan()");
 			
-			wifi.startScan();
-			ResultOfScan();
+			new ScanTask().execute();
+			
+//			wifi.startScan();
+//			ResultOfScan();
 			
 		}
 
@@ -103,4 +96,38 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	public static int getChannelFromFrequency(int frequency) {
 	    return channelsFrequency.indexOf(Integer.valueOf(frequency));
 	}
+	
+	
+	
+	class ScanTask extends AsyncTask<Integer, Integer, Integer>{
+
+		@Override
+		protected Integer doInBackground(Integer... params) {
+		
+						for (int i = 1; i < 11; i++) {
+							wifi.startScan();
+							ResultOfScan();
+							sleep();
+						}						
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer result) {
+			Toast.makeText(WiFiDemo.this, "scan complete",
+					Toast.LENGTH_LONG).show();
+			
+		}
+		
+		private void sleep() {
+			try {
+				
+				Thread.sleep(mDelay);
+			} catch (InterruptedException e) {
+				Log.e(TAG, e.toString());
+			}
+		}
+		
+	}
+
 }
