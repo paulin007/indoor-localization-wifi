@@ -13,20 +13,6 @@
 	    android:src="@drawable/piano"
 	    />
 
-    <TextView
-            android:id="@+id/textStatus"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="WiFiDemo" />
-    <ScrollView
-        android:id="@+id/ScrollView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-     
-    </ScrollView>
-
     <Button
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
@@ -52,5 +38,27 @@
         android:layout_marginLeft="18dp"
         android:layout_toRightOf="@+id/buttonScan"
         android:text="circle" />
+    
+      <ProgressBar
+        android:id="@+id/progressBar1"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="5dip"
+        android:minHeight="5dip"
+        android:visibility="invisible" >
+    </ProgressBar>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonScan"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:maxHeight="5dip"
+        android:minHeight="5dip"
+        android:visibility="invisible"  />
 
 </RelativeLayout>
