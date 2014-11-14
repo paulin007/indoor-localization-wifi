@@ -15,8 +15,8 @@ import android.widget.ImageView;
 
 public class WifiView extends ImageView implements OnTouchListener{
 	
-	public static float x=400;
-	public static float y=400;
+	public static float x=-400;
+	public static float y=-400;
 	private int r=20;
 	private Paint mPaint;
 	private Debug debug = new Debug();

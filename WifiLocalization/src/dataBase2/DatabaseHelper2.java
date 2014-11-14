@@ -1,4 +1,4 @@
-package dataBase;
+package dataBase2;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -14,14 +14,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper
+public class DatabaseHelper2 extends SQLiteOpenHelper
 {
-	private static final String DATABASE_NAME = "/mnt/sdcard/wifiLocation.db";
+	private static final String DATABASE_NAME = "/mnt/sdcard/wifiLocation2.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db=null;
-	private int count = 0;
 
-	public DatabaseHelper(Context context)
+	public DatabaseHelper2(Context context)
 	{
 		super(context, DATABASE_NAME, null, SCHEMA_VERSION);
 	
@@ -31,51 +30,36 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase db)
 	{
 		
-		/*
-		 * CREATE TABLE nom_de_la_table (
-nom_du_champ_1 type {contraintes},
-nom_du_champ_2 type {contraintes},
-…);
 
-Pour SQLite, c'est simple, il n'existe que cinq types de données :
-NULL pour les données NULL.
-INTEGER pour les entiers (sans virgule).
-REAL pour les nombres réels (avec virgule).
-TEXT pour les chaînes de caractères.
-BLOB pour les données brutes, par exemple si vous voulez mettre une image dans votre base de données
-		 */
 		String sql = "CREATE TABLE {0} ({1} INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		           "{2} REAL,"+
 				   "{3} REAL,"+
-		           "{4} TEXT NOT NULL,"+
-		           "{5} INTEGER,"+
-		           "{6} INTEGER,"+
-		           "{7} INTEGER,"+
-		           "{8} INTEGER);";
+		           "{4} INTEGER,"+
+		           "{5} TEXT NOT NULL,"+
+		           "{6} REAL,"+
+		           "{7} REAL);";
+		          
 				
-		db.execSQL(MessageFormat.format(sql, WifiTable.TABLE_NAME,WifiTable._ID,WifiTable.X,
-				                              WifiTable.Y, WifiTable.BSSID,
-				                              WifiTable.Frequency,
-				                              WifiTable.Level,
-				                              WifiTable.Timestamp,
-				                              WifiTable.Channel));
+		db.execSQL(MessageFormat.format(sql, WifiTable2.TABLE_NAME,WifiTable2._ID,WifiTable2.X,
+				                              WifiTable2.Y,WifiTable2.ID_RP, WifiTable2.BSSID,
+				                              WifiTable2.Media,
+				                              WifiTable2.SD));
+				                              
 	}
 
-	public void inserisciDatiWifi(float x,float y,String bssid,int frequency,int level,
-			Long timestamp,int channel)
+	public void inserisciDatiWifi(float x,float y,int id_rp,String bssid,double media,double sd)
 	{
 		ContentValues v = new ContentValues();
-		v.put(WifiTable.X, x);
-		v.put(WifiTable.Y, y);
-		v.put(WifiTable.BSSID, bssid);
-		v.put(WifiTable.Frequency, frequency);
-		v.put(WifiTable.Level, level);
-		v.put(WifiTable.Timestamp, timestamp);
-		v.put(WifiTable.Channel, channel);
+		v.put(WifiTable2.X, x);
+		v.put(WifiTable2.Y, y);
+		v.put(WifiTable2.ID_RP, id_rp);
+		v.put(WifiTable2.BSSID, bssid);
+		v.put(WifiTable2.Media, media);
+		v.put(WifiTable2.SD, sd);
 		
 		db = this.getWritableDatabase();
 
-		db.insert(WifiTable.TABLE_NAME, null, v);
+		db.insert(WifiTable2.TABLE_NAME, null, v);
 	}
 
 	@Override
@@ -95,7 +79,7 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 		private static final String TABLE_NAME = "wifi";
 		
 		// wifi Table Columns names
-		private static final String KEY_ID = "_id";
+		private static final String KEY_ID = "id";
 		
 		private static final String X = "x";
 
@@ -117,7 +101,7 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 		
 		
 		public void addRow(RowDatabase row) {
-//			Log.d("addBook", row.toString());
+			Log.d("addBook", row.toString());
 			// 1. get reference to writable DB
 			SQLiteDatabase db = this.getWritableDatabase();
 			// 2. create ContentValues to add key "column"/value
@@ -138,16 +122,13 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 			db.close();
 		}
 
-		public RowDatabase getRow(int id) {
+		public RowDatabase getBook(int id) {
 			// 1. get reference to readable DB
 			SQLiteDatabase db = this.getReadableDatabase();
 			// 2. build query
-			
-			
-			
 			Cursor cursor = db.query(TABLE_NAME, // a. table
 					COLUMNS, // b. column names
-					" _id = ?", // c. selections
+					" id = ?", // c. selections
 					new String[] { String.valueOf(id) }, // d. selections args
 					null, // e. group by
 					null, // f. having
@@ -166,7 +147,7 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 			row.setLevel(Integer.parseInt(cursor.getString(5)));
 			row.setTimestamp(Long.parseLong(cursor.getString(6)));
 			row.setChannel(Integer.parseInt(cursor.getString(7)));
-//			Log.d("getRow(" + id + ")", row.toString());
+			Log.d("getRow(" + id + ")", row.toString());
 			
 			// 5. return Row
 						return row;
@@ -199,27 +180,9 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 					rows.add(row);
 				} while (cursor.moveToNext());
 			}
-//			Log.d("getAllBooks()", rows.toString());
+			Log.d("getAllBooks()", rows.toString());
 			// return books
 			return rows;
-		}
-		
-		public int getNumberOfRow(){
-			
-			// 1. build the query
-						String query = "SELECT * FROM " + TABLE_NAME;
-						// 2. get reference to writable DB
-						SQLiteDatabase db = this.getWritableDatabase();
-						Cursor cursor = db.rawQuery(query, null);
-						// 3. go over each row, build book and add it to list
-					
-						if (cursor.moveToFirst()) {
-							do {
-								count++;
-							} while (cursor.moveToNext());
-						}
-			
-			return count;
 		}
 
 		// Updating single book
@@ -255,7 +218,7 @@ BLOB pour les données brutes, par exemple si vous voulez mettre une image dans v
 					new String[] { String.valueOf(row.getId()) });
 			// 3. close
 			db.close();
-//			Log.d("deleteBook", row.toString());
+			Log.d("deleteBook", row.toString());
 		}	
 	
 }
