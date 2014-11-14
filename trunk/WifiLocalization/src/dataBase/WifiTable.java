@@ -5,6 +5,8 @@ import android.provider.BaseColumns;
 public interface WifiTable extends BaseColumns {
 	String TABLE_NAME = "wifi";
 	
+//	String _ID ="id";
+	
 	String X = "x";
 
 	String Y = "y";

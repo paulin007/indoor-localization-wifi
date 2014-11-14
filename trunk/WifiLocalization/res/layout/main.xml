@@ -28,20 +28,29 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/buttonCircle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="46dp"
-        android:layout_toRightOf="@+id/buttonScan"
-        android:text="circle" />
-
-    <Button
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Scan" />
+
+    <Button
+        android:id="@+id/buttonFix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="36dp"
+        android:layout_toRightOf="@+id/buttonCircle"
+        android:text="Fix" />
+
+    <Button
+        android:id="@+id/buttonCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="18dp"
+        android:layout_toRightOf="@+id/buttonScan"
+        android:text="circle" />
 
 </RelativeLayout>
