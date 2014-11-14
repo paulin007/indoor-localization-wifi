@@ -3,11 +3,6 @@ package wifi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import model.ManagerDataBase;
-import model.NewRowDatabase;
-import model.RowDatabase;
-
 import paulin.tchonin.wifilocalization.R;
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import dataBase.DatabaseHelper;
@@ -37,19 +33,14 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	        Arrays.asList(0, 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447,
 	                2452, 2457, 2462, 2467, 2472, 2484));
 
-	TextView textStatus;
+	
 	Button buttonScan;
 	Button buttonCircle;
 	Button buttonFix;
 	private int mDelay = 1000;
 	
-//	int id_ir = 1;
-//	
-//	NewRowDatabase row2 = new NewRowDatabase();
-//	
-//	ManagerDataBase manager = new ManagerDataBase();
-//	
-//	RowDatabase row = new RowDatabase();
+	private ProgressBar mProgressBar;
+
 		
 
 	/** Called when the activity is first created. */
@@ -58,16 +49,16 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		// Setup UI
-		textStatus = (TextView) findViewById(R.id.textStatus);
+		
 		buttonScan = (Button) findViewById(R.id.buttonScan);
 		buttonScan.setOnClickListener(this);
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
 		buttonCircle.setOnClickListener(new buttonListener());
+		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+		
+		
 		buttonFix = (Button)findViewById(R.id.buttonFix);
-		buttonFix.setOnClickListener(new ButtonFixListener(databaseHelper, databaseHelper2));
-		
-		
-			      
+		buttonFix.setOnClickListener(new ButtonFixListener(databaseHelper, databaseHelper2,mProgressBar));		      
 
 		// Setup WiFi
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -106,11 +97,6 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	    return channelsFrequency.indexOf(Integer.valueOf(frequency));
 	}
 	
-	
-	
-//	class Scan extends AsyncTask<Params, Progress, Result>
-	
-	
 	class ScanTask extends AsyncTask<Integer, Integer, Integer>{
 
 		@Override
@@ -118,14 +104,26 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		
 						for (int i = 1; i < 11; i++) {
 							wifi.startScan();
-							ResultOfScan();
+							ResultOfScan();		
 							sleep();
+							publishProgress(i * 10);
 						}						
 			return null;
 		}
 		
 		@Override
+		protected void onPreExecute() {
+			mProgressBar.setVisibility(ProgressBar.VISIBLE);
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			mProgressBar.setProgress(values[0]);
+		}
+		
+		@Override
 		protected void onPostExecute(Integer result) {
+			mProgressBar.setVisibility(ProgressBar.INVISIBLE);
 			Toast.makeText(WiFiDemo.this, "scan complete",
 					Toast.LENGTH_LONG).show();
 			
