@@ -43,13 +43,13 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	Button buttonFix;
 	private int mDelay = 1000;
 	
-	int id_ir = 1;
-	
-	NewRowDatabase row2 = new NewRowDatabase();
-	
-	ManagerDataBase manager = new ManagerDataBase();
-	
-	RowDatabase row = new RowDatabase();
+//	int id_ir = 1;
+//	
+//	NewRowDatabase row2 = new NewRowDatabase();
+//	
+//	ManagerDataBase manager = new ManagerDataBase();
+//	
+//	RowDatabase row = new RowDatabase();
 		
 
 	/** Called when the activity is first created. */
@@ -64,7 +64,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
 		buttonCircle.setOnClickListener(new buttonListener());
 		buttonFix = (Button)findViewById(R.id.buttonFix);
-		buttonFix.setOnClickListener(this);
+		buttonFix.setOnClickListener(new ButtonFixListener(databaseHelper, databaseHelper2));
 		
 		
 			      
@@ -82,83 +82,20 @@ public class WiFiDemo extends Activity implements OnClickListener {
 
 	public void onClick(View view) {
 		
-		if (view.getId() == R.id.buttonScan) {
-//			Log.d(TAG, "onClick() wifi.startScan()");
-			
-			new ScanTask().execute();
-			
-			
-		}else if(view.getId() == R.id.buttonFix){
-			
-			int numberRow = databaseHelper.getNumberOfRow();
-			float currentX=-1;
-			float currentY=-1;
-			
-			
-			if(numberRow!=0){
-			     currentX=databaseHelper.getRow(1).getX();
-				 currentY=databaseHelper.getRow(1).getY();    	
-			}
-			
-			
-			ArrayList<RowDatabase> rowsCurrentRP = new ArrayList<RowDatabase>();
-			
-			for (int i = 1; i < numberRow + 1; i++) {
-				row = databaseHelper.getRow(i);
-				
-				if(row.getX()!=currentX && row.getY()!=currentY){
-					manager.setElements_Of_RP(rowsCurrentRP);
-						
-					putDataOnNewDataBase(manager.getMacs_RP());			
-					
-					
-					rowsCurrentRP.clear();
-					rowsCurrentRP.add(row);
-					currentX = row.getX();
-					currentY = row.getY();				
-					
-					if(i==numberRow){	
-						
-						manager.setElements_Of_RP(rowsCurrentRP);
-						putDataOnNewDataBase(manager.getMacs_RP());	
-					}
-					
-				}else{
-					rowsCurrentRP.add(row);
-					
-				}	
-			}	
-			
+		if (view.getId() == R.id.buttonScan) {	
+			new ScanTask().execute();					
 		}
 
 	}
 	
-	public void putDataOnNewDataBase (ArrayList<NewRowDatabase> macs_rp){
-		
-		
-		for (int i = 0; i < macs_rp.size(); i++) {
-			row2 = macs_rp.get(i);
-			databaseHelper2.inserisciDatiWifi(row2.getX(), row2.getY(), id_ir,
-					row2.getBssid(), row2.getMedia(), row2.getVarianza());
-		}
-		id_ir++;
-		
-	}
+
 	
 	public void ResultOfScan(){
 		
-	
 		List<ScanResult> results = wifi.getScanResults();
-//		ScanResult bestSignal = null;
+
 		for (ScanResult result : results) {
-//			textStatus.append("\n\n"+"SSID :"+result.SSID+"\n"+"BSSID :"+result.BSSID+
-//					"\ncapabilities :"+result.capabilities+
-//					"\nfrequency :"+result.frequency+
-//					"\nlevel :"+result.level+
-//					"\ntimestamp : "+result.timestamp /* working only for api min 17*/ +
-//					"\nchannel : "+getChannelFromFrequency(result.frequency)); 
-			//Log.e("SSID", result.SSID);
-			
+
 			databaseHelper.inserisciDatiWifi(WifiView.x, WifiView.y, result.BSSID, result.frequency,
 					result.level, result.timestamp, getChannelFromFrequency(result.frequency));
 		}
@@ -168,6 +105,10 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	public static int getChannelFromFrequency(int frequency) {
 	    return channelsFrequency.indexOf(Integer.valueOf(frequency));
 	}
+	
+	
+	
+//	class Scan extends AsyncTask<Params, Progress, Result>
 	
 	
 	class ScanTask extends AsyncTask<Integer, Integer, Integer>{
