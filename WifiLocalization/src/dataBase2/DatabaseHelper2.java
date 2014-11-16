@@ -36,26 +36,51 @@ public class DatabaseHelper2 extends SQLiteOpenHelper
 				   "{3} REAL,"+
 		           "{4} INTEGER,"+
 		           "{5} TEXT NOT NULL,"+
-		           "{6} REAL,"+
-		           "{7} REAL);";
+		           "{6} REAL,"+"{7} REAL,"+"{8} REAL,"+"{9} REAL,"+"{10} REAL,"+
+		           "{11} REAL,"+"{12} REAL,"+"{13} REAL,"+"{14} REAL,"+"{15} REAL,"+
+		           "{16} REAL,"+"{17} REAL,"+"{18} REAL,"+"{19} REAL,"+"{20} REAL,"+
+		           "{21} REAL,"+"{22} REAL,"+"{23} REAL,"+"{24} REAL,"+"{25} REAL,"+
+		           "{26} REAL,"+"{27} REAL,"+"{28} REAL,"+"{29} REAL,"+"{30} REAL,"+
+		           "{31} REAL,"+"{32} REAL,"+"{33} REAL,"+"{34} REAL,"+"{35} REAL,"+
+		           "{36} REAL,"+"{37} REAL,"+"{38} REAL,"+"{39} REAL,"+"{40} REAL);";
+		           
 		          
 				
 		db.execSQL(MessageFormat.format(sql, WifiTable2.TABLE_NAME,WifiTable2._ID,WifiTable2.X,
 				                              WifiTable2.Y,WifiTable2.ID_RP, WifiTable2.BSSID,
-				                              WifiTable2.Media,
-				                              WifiTable2.SD));
+				                              WifiTable2.C90,WifiTable2.C88,WifiTable2.C86,WifiTable2.C84,WifiTable2.C82,
+				                              WifiTable2.C80,WifiTable2.C78,WifiTable2.C76,WifiTable2.C74,WifiTable2.C72,
+				                              WifiTable2.C70,WifiTable2.C68,WifiTable2.C66,WifiTable2.C64,WifiTable2.C62,
+				                              WifiTable2.C60,WifiTable2.C58,WifiTable2.C56,WifiTable2.C54,WifiTable2.C52,
+				                              WifiTable2.C50,WifiTable2.C48,WifiTable2.C46,WifiTable2.C44,WifiTable2.C42,
+				                              WifiTable2.C40,WifiTable2.C38,WifiTable2.C36,WifiTable2.C34,WifiTable2.C32,
+				                              WifiTable2.C30,WifiTable2.C28,WifiTable2.C26,WifiTable2.C24,WifiTable2.C22));
+				                             
 				                              
 	}
 
-	public void inserisciDatiWifi(float x,float y,int id_rp,String bssid,double media,double sd)
+	public void inserisciDatiWifi(float x,float y,int id_rp,String bssid,
+			double c90,double c88,double c86,double c84,double c82,
+			double c80,double c78,double c76,double c74,double c72,
+			double c70,double c68,double c66,double c64,double c62,
+			double c60,double c58,double c56,double c54,double c52,
+			double c50,double c48,double c46,double c44,double c42,
+			double c40,double c38,double c36,double c34,double c32,
+			double c30,double c28,double c26,double c24,double c22)
 	{
 		ContentValues v = new ContentValues();
 		v.put(WifiTable2.X, x);
 		v.put(WifiTable2.Y, y);
 		v.put(WifiTable2.ID_RP, id_rp);
 		v.put(WifiTable2.BSSID, bssid);
-		v.put(WifiTable2.Media, media);
-		v.put(WifiTable2.SD, sd);
+		v.put(WifiTable2.C90, c90); v.put(WifiTable2.C88, c88); v.put(WifiTable2.C86, c86); v.put(WifiTable2.C84, c84); v.put(WifiTable2.C82, c82);
+		v.put(WifiTable2.C80, c80); v.put(WifiTable2.C78, c78); v.put(WifiTable2.C76, c76); v.put(WifiTable2.C74, c74); v.put(WifiTable2.C72, c72);
+		v.put(WifiTable2.C70, c70); v.put(WifiTable2.C68, c68); v.put(WifiTable2.C66, c66); v.put(WifiTable2.C64, c64); v.put(WifiTable2.C62, c62);
+		v.put(WifiTable2.C60, c60); v.put(WifiTable2.C58, c58); v.put(WifiTable2.C56, c56); v.put(WifiTable2.C54, c54); v.put(WifiTable2.C52, c52);
+		v.put(WifiTable2.C50, c50); v.put(WifiTable2.C48, c48); v.put(WifiTable2.C46, c46); v.put(WifiTable2.C44, c44); v.put(WifiTable2.C42, c42);
+		v.put(WifiTable2.C40, c40); v.put(WifiTable2.C38, c38); v.put(WifiTable2.C36, c36); v.put(WifiTable2.C34, c34); v.put(WifiTable2.C32, c32);
+		v.put(WifiTable2.C30, c30); v.put(WifiTable2.C28, c28); v.put(WifiTable2.C26, c26); v.put(WifiTable2.C24, c24); v.put(WifiTable2.C22, c22);
+	
 		
 		db = this.getWritableDatabase();
 

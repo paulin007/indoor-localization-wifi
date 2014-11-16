@@ -1,5 +1,6 @@
 package wifi;
 
+import utility.Debug;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -7,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +23,10 @@ public class WifiView extends ImageView implements OnTouchListener{
 	private Paint mPaint;
 	private Debug debug = new Debug();
 	
-	private static final String TAG = "View";
+	 static float  relativeX ;
+     static float  relativeY ;
+	
+     private static final String TAG = "View";
 	   // These matrices will be used to move and zoom image
 	   Matrix matrix = new Matrix();
 	   Matrix savedMatrix = new Matrix();
@@ -95,7 +100,7 @@ public class WifiView extends ImageView implements OnTouchListener{
 	         mode = DRAG;
 	       
 //	         logImageViewMatrixInfos(matrix, this);
-//	         logRelativeXYInfos(matrix, event);
+         logRelativeXYInfos(matrix, event);
 	        
 	         
 	         
@@ -206,5 +211,32 @@ public class WifiView extends ImageView implements OnTouchListener{
 	      float y = event.getY(0) + event.getY(1);
 	      point.set(x / 2, y / 2);
 	   }
+	   
+	   
+	   private void logRelativeXYInfos(Matrix matrix, MotionEvent event) {
+		    
+	       
+		   
+		      // Get the values of the matrix
+		         float[] values = new float[9];
+		         matrix.getValues(values);
+
+		         // values[2] and values[5] are the x,y coordinates of the top left corner of the drawable image, regardless of the zoom factor.
+		         // values[0] and values[4] are the zoom factors for the image's width and height respectively. If you zoom at the same factor, these should both be the same value.
+
+		         // event is the touch event for MotionEvent.ACTION_UP
+		          relativeX = (event.getX() - values[2]) / values[0];
+		          relativeY = (event.getY() - values[5]) / values[4];
+		         
+		         /*
+		          * Nota bene: relativeX e relativeY sono i valori da salvare dentro il data base
+		          *            e event.geX e event.getY che useremo per disegnare la posizione predetto.
+		          *            quindi bisogno risolvere l'equazione averli.
+		          */
+		  
+//		     Log.e("Log value", "position Details: xPos: " + relativeX + " yPos: " + relativeY );
+		  }
+	   
+	
 
 }
