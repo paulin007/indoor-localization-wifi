@@ -87,7 +87,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 
 		for (ScanResult result : results) {
 
-			databaseHelper.inserisciDatiWifi(WifiView.x, WifiView.y, result.BSSID, result.frequency,
+			databaseHelper.inserisciDatiWifi(WifiView.relativeX, WifiView.relativeY, result.BSSID, result.frequency,
 					result.level, result.timestamp, getChannelFromFrequency(result.frequency));
 		}
 

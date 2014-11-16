@@ -1,4 +1,4 @@
-package wifi;
+package utility;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
