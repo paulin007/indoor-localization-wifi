@@ -26,8 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="36dp"
-        android:layout_toRightOf="@+id/buttonCircle"
+        android:layout_centerHorizontal="true"
         android:text="Fix" />
 
     <Button
@@ -35,19 +34,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="18dp"
-        android:layout_toRightOf="@+id/buttonScan"
+        android:layout_marginRight="14dp"
+        android:layout_toLeftOf="@+id/buttonFix"
         android:text="circle" />
-    
-      <ProgressBar
-        android:id="@+id/progressBar1"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="fill_parent"
+
+    <Button
+        android:id="@+id/buttonFind"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxHeight="5dip"
-        android:minHeight="5dip"
-        android:visibility="invisible" >
-    </ProgressBar>
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/buttonFix"
+        android:text="Find" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -60,5 +58,6 @@
         android:maxHeight="5dip"
         android:minHeight="5dip"
         android:visibility="invisible"  />
-
+    
+    
 </RelativeLayout>

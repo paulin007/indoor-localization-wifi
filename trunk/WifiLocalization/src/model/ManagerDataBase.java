@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class ManagerDataBase {
 
 	String TAG = "ManagerDataBase - ";
@@ -48,7 +50,7 @@ public class ManagerDataBase {
 			}
 		}
 
-		// Log.e("manager.ordina", elements_Of_RP.toString());
+//		 Log.e("manager.ordina", elements_Of_RP.toString());
 	}
 
 	public void manipolation() {
@@ -62,7 +64,7 @@ public class ManagerDataBase {
 		for (int i = 0; i < elements_Of_RP.size(); i++) {
 
 			if (currentMac.equalsIgnoreCase(elements_Of_RP.get(i).getBssid())) {
-				levels[(elements_Of_RP.get(i).getLevel()) * (-1)]++;
+				levels[Math.abs(elements_Of_RP.get(i).getLevel())]++;
 
 		
 				// caso il cui nell'arraylist c'è solo un indirizzo mac
@@ -77,7 +79,7 @@ public class ManagerDataBase {
 
 				clean();
 
-				levels[(elements_Of_RP.get(i).getLevel()) * (-1)]++;
+				levels[Math.abs(elements_Of_RP.get(i).getLevel())]++;
 
 			
 				// caso in cui ci sono piu indirizzi mac nell'arraylist ma
@@ -93,15 +95,15 @@ public class ManagerDataBase {
 
 	
 		//
-		// Log.e(TAG+"x= "+elements_Of_RP.get(index).getX()+" y= "+elements_Of_RP.get(index).getY(),
-		// "  trainingdata = "+trainingData);
+//		 Log.e(TAG+"x= "+elements_Of_RP.get(index).getX()+" y= "+elements_Of_RP.get(index).getY(),
+//		 "  trainingdata = "+trainingData);
 		//
-		// Log.e(TAG+" macs_RP",
-		// macs_RP.toString()+"  "+(levels[90]+levels[89])/trainingData);
+//		 Log.e(TAG+" macs_RP",
+//		 macs_RP.toString()+"  "+(levels[90]+levels[89])/trainingData);
 		
 
 		if (trainingData != 0) {
-			macs_RP.add(new NewRowDatabase(elements_Of_RP.get(index).getX(),
+			macs_RP.add(new NewRowDatabase(elements_Of_RP.get(index).getId(),elements_Of_RP.get(index).getX(),
 					elements_Of_RP.get(index).getY(), id_rp, currentMac,
 					(double) (levels[90] + levels[89]) / trainingData,
 					(double) (levels[88] + levels[87]) / trainingData,
@@ -139,6 +141,7 @@ public class ManagerDataBase {
 					(double) (levels[24] + levels[23]) / trainingData,
 					(double) (levels[22] + levels[21]) / trainingData));
 		}
+	
 		clean();
 
 	}

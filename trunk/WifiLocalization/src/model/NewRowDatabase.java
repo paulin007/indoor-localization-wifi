@@ -2,6 +2,8 @@ package model;
 
 public class NewRowDatabase {
 
+	private int id;
+	
 	private float x;
 
 	private float y;
@@ -18,7 +20,7 @@ public class NewRowDatabase {
 
 	}
 
-	public NewRowDatabase(float x, float y, int id_rp, String bssid,
+	public NewRowDatabase(int id,float x, float y, int id_rp, String bssid,
 			double c90, double c88, double c86, double c84, double c82,
 			double c80, double c78, double c76, double c74, double c72,
 			double c70, double c68, double c66, double c64, double c62,
@@ -27,6 +29,7 @@ public class NewRowDatabase {
 			double c40, double c38, double c36, double c34, double c32,
 			double c30, double c28, double c26, double c24, double c22) {
 		super();
+		this.id=id;
 		this.x = x;
 		this.y = y;
 		this.id_rp = id_rp;
@@ -68,6 +71,14 @@ public class NewRowDatabase {
 		this.C22 = c22;
 	}
 
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public float getX() {
 		return x;
 	}

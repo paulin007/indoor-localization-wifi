@@ -186,7 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	}
 
 	public int getNumberOfRow() {
-
+         count=0;
 		// 1. build the query
 		String query = "SELECT * FROM " + TABLE_NAME;
 		// 2. get reference to writable DB
@@ -199,7 +199,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				count++;
 			} while (cursor.moveToNext());
 		}
-
+        cursor.close();
+        
 		return count;
 	}
 

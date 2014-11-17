@@ -1,6 +1,5 @@
 package wifi;
 
-import utility.Debug;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -8,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
-import android.util.Log;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -21,7 +18,7 @@ public class WifiView extends ImageView implements OnTouchListener{
 	public static float y=-400;
 	private int r=20;
 	private Paint mPaint;
-	private Debug debug = new Debug();
+
 	
 	 static float  relativeX ;
      static float  relativeY ;
@@ -69,8 +66,7 @@ public class WifiView extends ImageView implements OnTouchListener{
 		super.onDraw(canvas);
 		if(isCircle){
 	        canvas.drawCircle(x, y, r, mPaint);
-	      
-			
+	      			
 			postInvalidateDelayed(20);
 			}
 	}

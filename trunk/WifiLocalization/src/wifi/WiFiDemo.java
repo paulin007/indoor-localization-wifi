@@ -3,6 +3,8 @@ package wifi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import onlinePhase.OutlierDetection;
 import paulin.tchonin.wifilocalization.R;
 import android.app.Activity;
 import android.content.Context;
@@ -15,8 +17,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+import button.ButtonFindListener;
 import dataBase.DatabaseHelper;
 import dataBase2.DatabaseHelper2;
 
@@ -37,9 +39,12 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	Button buttonScan;
 	Button buttonCircle;
 	Button buttonFix;
+	Button buttonFind;
 	private int mDelay = 1000;
 	
 	private ProgressBar mProgressBar;
+	
+	private OutlierDetection outlierDetection;
 
 		
 
@@ -62,6 +67,12 @@ public class WiFiDemo extends Activity implements OnClickListener {
 
 		// Setup WiFi
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		
+		
+		outlierDetection =  new OutlierDetection(databaseHelper2,wifi);
+		
+		buttonFind = (Button)findViewById(R.id.buttonFind);
+		buttonFind.setOnClickListener(new ButtonFindListener(outlierDetection));
 		
 	}
 
