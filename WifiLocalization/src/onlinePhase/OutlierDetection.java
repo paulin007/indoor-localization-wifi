@@ -31,8 +31,7 @@ public class OutlierDetection {
 		this.databaseHelper2 = databaseHelper2;
 		this.wifi = wifi;
 		row2 = new NewRowDatabase();
-		n = getNumberOfMac();
-		m = getNumberOfRP();
+	
 	}
 
 	public int getNumberOfMac() {
@@ -43,7 +42,6 @@ public class OutlierDetection {
 
 			listOfMacs.add(databaseHelper2.getRow2(i).getBssid());
 		}
-		Log.e(TAG, " numMac ="+listOfMacs.size());
 		return listOfMacs.size();
 	}
 
@@ -54,6 +52,8 @@ public class OutlierDetection {
 	
 	public void init(){
 		//TODO da mettere in un altro posto
+		n = getNumberOfMac();
+		m = getNumberOfRP();
 		
 		wifi.startScan();
 		List<ScanResult> results = wifi.getScanResults();
@@ -61,8 +61,8 @@ public class OutlierDetection {
 			s.add(new Potenza(result.BSSID, result.level));			
 		}
 		
-		Log.e(TAG+"  n = ", ""+n);
-		Log.e(TAG+"  m = ", ""+m);
+//		Log.e(TAG+"  n = ", ""+n);
+//		Log.e(TAG+"  m = ", ""+m);
 		Log.e(TAG+"  s ", s.toString());
 		
 	}
