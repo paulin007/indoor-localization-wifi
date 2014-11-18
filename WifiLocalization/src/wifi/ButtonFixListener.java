@@ -84,6 +84,7 @@ public class ButtonFixListener implements OnClickListener {
 
 			if (numberRow != 0) {
 				Log.e(Tag+"numberRow = ", "" + numberRow);
+				//TODO da migliorare 
 				currentX = databaseHelper.getRow(1).getX();
 				currentY = databaseHelper.getRow(1).getY();
 			}
