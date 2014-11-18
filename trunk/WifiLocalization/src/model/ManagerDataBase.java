@@ -16,6 +16,8 @@ public class ManagerDataBase {
 	private int id_rp = 1;
 
 	int trainingData = 0;
+	
+	
 
 	public ManagerDataBase() {
 		super();

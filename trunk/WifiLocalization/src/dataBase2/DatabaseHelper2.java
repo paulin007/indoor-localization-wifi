@@ -1,6 +1,7 @@
 package dataBase2;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -165,6 +166,8 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 
 	private static final String BSSID = "bssid";
 
+	//TODO da eleminare 
+	
 	private static final String C90 = "c90_89";
 	private static final String C88 = "c88_87";
 	private static final String C86 = "c86_85";
@@ -222,6 +225,7 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		// 2. get reference to writable DB
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
+		
 		// 3. go over each row, build book and add it to list
 
 		if (cursor.moveToFirst()) {
@@ -248,6 +252,9 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 				null, // f. having
 				null, // g. order by
 				null); // h. limit
+		
+		
+		
 		// 3. if we got results get the first one
 		if (cursor != null)
 			cursor.moveToFirst();
@@ -310,6 +317,32 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		return row2;
 	}
 
+	
+	public ArrayList<Integer> query(String[] column, String currentMac,String orderBy ){
+		//TODO da provare 
+		
+		ArrayList<Integer> id_rps = new ArrayList<Integer>();
+		// 1. get reference to readable DB
+		SQLiteDatabase db = this.getReadableDatabase();
+		// 2. build query
+		Cursor cursor = db.query(TABLE_NAME, // a. table
+				column, // b. column names
+				" bssid = ?", // c. selections
+				new String[] { currentMac }, // d. selections args
+				null, // e. group by
+				null, // f. having
+				orderBy+" DESC", // g. order by
+				null); // h. limit
+		
+		if (cursor.moveToFirst()) {
+			do {
+				id_rps.add(Integer.parseInt(cursor.getString(0)));				
+			} while (cursor.moveToNext());
+		}
+		
+	   cursor.close();
+	   return id_rps;   	
+	}
 	
 	
 	

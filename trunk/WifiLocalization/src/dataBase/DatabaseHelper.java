@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "/mnt/sdcard/wifiLocation.db";
@@ -147,7 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		row.setLevel(Integer.parseInt(cursor.getString(5)));
 		row.setTimestamp(Long.parseLong(cursor.getString(6)));
 		row.setChannel(Integer.parseInt(cursor.getString(7)));
-		// Log.d("getRow(" + id + ")", row.toString());
+//		 Log.d("getRow(" + id + ")", row.toString());
 
 		// 5. return Row
 		cursor.close();
