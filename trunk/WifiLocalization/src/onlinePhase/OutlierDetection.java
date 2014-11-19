@@ -14,6 +14,7 @@ import dataBase2.DatabaseHelper2;
 public class OutlierDetection {
 
 	private final static String TAG = OutlierDetection.class.getName();
+	private final static int q = 2;
 	private DatabaseHelper2 databaseHelper2;
 	private int n;// number of access point
 	private int m; // number of references points
@@ -25,11 +26,10 @@ public class OutlierDetection {
 	private ArrayList<Potenza> s = new ArrayList<Potenza>(); // signal received
 																// by the tag
 
- 
-
 	private String[] columnsLevels = new String[100];
 
-	
+	private int[][] table;
+	private Punto[] ri;
 
 	public OutlierDetection(DatabaseHelper2 databaseHelper2, WifiManager wifi) {
 		super();
@@ -51,11 +51,11 @@ public class OutlierDetection {
 		while (iter.hasNext()) {
 			listOfMacs.add((String) iter.next());
 		}
-		
-		Log.e(TAG+" getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
-//
-//		Log.e(TAG+"getNumMac is sorted ?", nmacs.toString());
-	
+
+		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
+		//
+		// Log.e(TAG+"getNumMac is sorted ?", nmacs.toString());
+
 		return nmacs.size();
 	}
 
@@ -74,19 +74,20 @@ public class OutlierDetection {
 		for (ScanResult result : results) {
 			s.add(new Potenza(result.BSSID, result.level));
 		}
-		
+
 		// just for test
-//		s.add(new Potenza("n", -90));
-//		s.add(new Potenza("a", -90));
-//		s.add(new Potenza("c", -87));
-		
+		// s.add(new Potenza("n", -90));
+		// s.add(new Potenza("a", -90));
+		// s.add(new Potenza("c", -87));
+
 		ordinaMac();
 		map();
+		calculateTheCenter();
 
 	}
 
 	public void map() {
-		int[][] table = new int[m][n];
+		table = new int[m][n];
 		ArrayList<Integer> listId_rpSorted = new ArrayList<Integer>();
 
 		int currentLevel;
@@ -100,33 +101,34 @@ public class OutlierDetection {
 				listId_rpSorted = databaseHelper2.query(columns,
 						listOfMacs.get(nColumn),
 						columnsLevels[Math.abs(currentLevel)]);
-				
-				Log.e(TAG+" if map", listId_rpSorted.toString());
-				
+
+				Log.e(TAG + " if map", listId_rpSorted.toString());
+
 			} else {
 				// TODO the mac (ap) currentMac is not visible by the Tag
-				Log.e(TAG+" else map", currentMac+" are not visible by a tag");
+				Log.e(TAG + " else map", currentMac
+						+ " are not visible by a tag");
 				continue;
 			}
 			for (int n_row = 0; n_row < m; n_row++) {
-				  
+
 				if (n_row < listId_rpSorted.size()) {
 					table[n_row][nColumn] = listId_rpSorted.get(n_row);
-//					Log.e(TAG, " "+listId_rpSorted.get(n_row));
+					// Log.e(TAG, " "+listId_rpSorted.get(n_row));
 				}
-				
+
 			}
 		}
-		
-		  // just for a Log
-//		   Log.e(TAG+"the map table", table.toString());
-//		   for (int j = 0; j < n; j++)
-//		   for (int row = 0; row < m; row++) {
-//			 {
-//				Log.e(TAG, ""+table[row][j]);
-//			}
-//		}
-			
+
+		// just for a Log
+		// Log.e(TAG+"the map table", table.toString());
+		// for (int j = 0; j < n; j++)
+		// for (int row = 0; row < m; row++) {
+		// {
+		// Log.e(TAG, ""+table[row][j]);
+		// }
+		// }
+
 	}
 
 	/**
@@ -142,14 +144,15 @@ public class OutlierDetection {
 	private int findMacOnReceivedSignal(String currentmac) {
 		// TODO da provare
 		for (int i = 0; i < s.size(); i++) {
-//			Log.e(TAG+" currentmac", currentmac);
-//			Log.e(TAG+" s("+i+") =", s.get(i).getMac());
+			// Log.e(TAG+" currentmac", currentmac);
+			// Log.e(TAG+" s("+i+") =", s.get(i).getMac());
 			if (currentmac.equals(s.get(i).getMac())) {
-				Log.e(TAG+"  findMac ", " the tag see the mac "+currentmac+" with level = "+s.get(i).getLevel());
+				Log.e(TAG + "  findMac ", " the tag see the mac " + currentmac
+						+ " with level = " + s.get(i).getLevel());
 				return s.get(i).getLevel();
 			}
 		}
-		Log.e(TAG+"  findMac ", " the tag dn't see the mac "+currentmac);
+		Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
 		return 0;
 	}
 
@@ -168,8 +171,28 @@ public class OutlierDetection {
 				}
 			}
 		}
-				
-		Log.e(TAG+"  ordina	", s.toString());
+
+		Log.e(TAG + "  ordina	", s.toString());
+	}
+
+	public void calculateTheCenter() {
+		ri = new Punto[n];
+		Punto punto;
+		float x = 0;
+		float y = 0;
+
+		for (int nColumn = 0; nColumn < n; nColumn++) {
+			for (int n_row = 0; n_row < q; n_row++) {
+				if (table[n_row][nColumn] != 0) {
+					punto = databaseHelper2.queryPunto(table[n_row][nColumn]);
+					x += punto.getX();
+					y += punto.getY();
+				} else {
+
+				}
+			}
+			ri[nColumn] = new Punto(x, y);
+		}
 	}
 
 	public ArrayList<Potenza> getS() {

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import onlinePhase.Punto;
+
 import model.NewRowDatabase;
 import model.RowDatabase;
 import android.content.ContentValues;
@@ -15,14 +17,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper2 extends SQLiteOpenHelper {
-	private static final String TAG="DatabaseHelper2";
+	private static final String TAG = "DatabaseHelper2";
 	private static final String DATABASE_NAME = "/mnt/sdcard/wifiLocation2.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
 
 	private int count = 0;
-	
-	int i =0;
+
+	int i = 0;
 
 	public DatabaseHelper2(Context context) {
 		super(context, DATABASE_NAME, null, SCHEMA_VERSION);
@@ -166,8 +168,8 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 
 	private static final String BSSID = "bssid";
 
-	//TODO da eleminare 
-	
+	// TODO da eleminare
+
 	private static final String C90 = "c90_89";
 	private static final String C88 = "c88_87";
 	private static final String C86 = "c86_85";
@@ -219,13 +221,13 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 			C34, C32, C30, C28, C26, C24, C22 };
 
 	public int getNumberOfRow() {
-		count=0;
+		count = 0;
 		// 1. build the query
 		String query = "SELECT * FROM " + TABLE_NAME;
 		// 2. get reference to writable DB
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
-		
+
 		// 3. go over each row, build book and add it to list
 
 		if (cursor.moveToFirst()) {
@@ -239,8 +241,8 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 	}
 
 	public NewRowDatabase getRow2(int id) {
-		//TODO da testare 
-		
+		// TODO da testare
+
 		// 1. get reference to readable DB
 		SQLiteDatabase db = this.getReadableDatabase();
 		// 2. build query
@@ -252,9 +254,7 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 				null, // f. having
 				null, // g. order by
 				null); // h. limit
-		
-		
-		
+
 		// 3. if we got results get the first one
 		if (cursor != null)
 			cursor.moveToFirst();
@@ -270,57 +270,55 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		row2.setC86(Double.parseDouble(cursor.getString(i++)));
 		row2.setC84(Double.parseDouble(cursor.getString(i++)));
 		row2.setC82(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC80(Double.parseDouble(cursor.getString(i++)));
 		row2.setC78(Double.parseDouble(cursor.getString(i++)));
 		row2.setC76(Double.parseDouble(cursor.getString(i++)));
 		row2.setC74(Double.parseDouble(cursor.getString(i++)));
 		row2.setC72(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC70(Double.parseDouble(cursor.getString(i++)));
 		row2.setC68(Double.parseDouble(cursor.getString(i++)));
 		row2.setC66(Double.parseDouble(cursor.getString(i++)));
 		row2.setC64(Double.parseDouble(cursor.getString(i++)));
 		row2.setC62(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC60(Double.parseDouble(cursor.getString(i++)));
 		row2.setC58(Double.parseDouble(cursor.getString(i++)));
 		row2.setC56(Double.parseDouble(cursor.getString(i++)));
 		row2.setC54(Double.parseDouble(cursor.getString(i++)));
 		row2.setC52(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC50(Double.parseDouble(cursor.getString(i++)));
 		row2.setC48(Double.parseDouble(cursor.getString(i++)));
 		row2.setC46(Double.parseDouble(cursor.getString(i++)));
 		row2.setC44(Double.parseDouble(cursor.getString(i++)));
 		row2.setC42(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC40(Double.parseDouble(cursor.getString(i++)));
 		row2.setC38(Double.parseDouble(cursor.getString(i++)));
 		row2.setC36(Double.parseDouble(cursor.getString(i++)));
 		row2.setC34(Double.parseDouble(cursor.getString(i++)));
 		row2.setC32(Double.parseDouble(cursor.getString(i++)));
-		
+
 		row2.setC30(Double.parseDouble(cursor.getString(i++)));
 		row2.setC28(Double.parseDouble(cursor.getString(i++)));
 		row2.setC26(Double.parseDouble(cursor.getString(i++)));
 		row2.setC24(Double.parseDouble(cursor.getString(i++)));
 		row2.setC22(Double.parseDouble(cursor.getString(i++)));
-		
-		
-//		Log.d("getRow2(" + id + ")", row2.toString());
 
-		
-		i=0;
+		// Log.d("getRow2(" + id + ")", row2.toString());
+
+		i = 0;
 		cursor.close();
 		// 5. return Row
 		return row2;
 	}
 
-	
-	public ArrayList<Integer> query(String[] column, String currentMac,String orderBy ){
-		//TODO da provare 
-		
+	public ArrayList<Integer> query(String[] column, String currentMac,
+			String orderBy) {
+		// TODO da provare
+
 		ArrayList<Integer> id_rps = new ArrayList<Integer>();
 		// 1. get reference to readable DB
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -331,22 +329,46 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 				new String[] { currentMac }, // d. selections args
 				null, // e. group by
 				null, // f. having
-				orderBy+" DESC", // g. order by
+				orderBy + " DESC", // g. order by
 				null); // h. limit
-		
+
 		if (cursor.moveToFirst()) {
 			do {
-				id_rps.add(Integer.parseInt(cursor.getString(0)));				
+				id_rps.add(Integer.parseInt(cursor.getString(0)));
 			} while (cursor.moveToNext());
 		}
-		
-	   cursor.close();
-	   return id_rps;   	
+
+		cursor.close();
+		return id_rps;
 	}
-	
-	
-	
-	
+
+	public Punto queryPunto(int idRP) {
+		// TODO controllare se torna solo un numero
+		String[] columns = new String[] { X, Y };
+		// 1. get reference to readable DB
+		SQLiteDatabase db = this.getReadableDatabase();
+		// 2. build query
+		// Cursor cursor = db.query(distinct, table, columns, selection,
+		// selectionArgs, groupBy, having, orderBy, limit, cancellationSignal)
+
+		Cursor cursor = db.query(true, TABLE_NAME, // a. table
+				columns, // b. column names
+				" rp = ?", // c. selections
+				new String[] { String.valueOf(idRP) }, // d. selections args
+				null, // e. group by
+				null, // f. having
+				null, // g. order by
+				null); // h. limit
+
+		// 3. if we got results get the first one
+		if (cursor != null)
+			cursor.moveToFirst();
+		Punto punto = new Punto(Float.parseFloat(cursor.getString(0)),
+				Float.parseFloat(cursor.getString(1)));
+		cursor.close();
+		return punto;
+	}
+
 	public void addRow(RowDatabase row) {
 		// Log.d("addBook", row.toString());
 		// // 1. get reference to writable DB
@@ -402,25 +424,25 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 
 	// Updating single book
 	public int updateRow(RowDatabase row) {
-//		// 1. get reference to writable DB
-//		SQLiteDatabase db = this.getWritableDatabase();
-//		// 2. create ContentValues to add key "column"/value
-//		ContentValues values = new ContentValues();
-//		values.put(X, row.getX()); // get x
-//		values.put(Y, row.getY()); // get y
-//		values.put(BSSID, row.getBssid()); // get y
-//		values.put(Frequency, row.getFrequency()); // get y
-//		values.put(Level, row.getLevel()); // get y
-//		values.put(Timestamp, row.getTimestamp()); // get y
-//		values.put(Channel, row.getChannel()); // get y
-//		// 3. updating row
-//		int i = db.update(TABLE_NAME, // table
-//				values, // column/value
-//				KEY_ID + " = ?", // selections
-//				new String[] { String.valueOf(row.getId()) }); // selection
-//																// args
-//		// 4. close
-//		db.close();
+		// // 1. get reference to writable DB
+		// SQLiteDatabase db = this.getWritableDatabase();
+		// // 2. create ContentValues to add key "column"/value
+		// ContentValues values = new ContentValues();
+		// values.put(X, row.getX()); // get x
+		// values.put(Y, row.getY()); // get y
+		// values.put(BSSID, row.getBssid()); // get y
+		// values.put(Frequency, row.getFrequency()); // get y
+		// values.put(Level, row.getLevel()); // get y
+		// values.put(Timestamp, row.getTimestamp()); // get y
+		// values.put(Channel, row.getChannel()); // get y
+		// // 3. updating row
+		// int i = db.update(TABLE_NAME, // table
+		// values, // column/value
+		// KEY_ID + " = ?", // selections
+		// new String[] { String.valueOf(row.getId()) }); // selection
+		// // args
+		// // 4. close
+		// db.close();
 		return i;
 	}
 
