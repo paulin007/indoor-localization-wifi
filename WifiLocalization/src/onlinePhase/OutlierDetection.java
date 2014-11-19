@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-import model.NewRowDatabase;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -15,10 +14,11 @@ public class OutlierDetection {
 
 	private final static String TAG = OutlierDetection.class.getName();
 	private final static int q = 2;
+	private final static float T = 2; // set to 5 meter
+
 	private DatabaseHelper2 databaseHelper2;
 	private int n;// number of access point
 	private int m; // number of references points
-	private NewRowDatabase row2;
 	private WifiManager wifi;
 
 	private TreeSet<String> nmacs = new TreeSet<String>();
@@ -30,12 +30,12 @@ public class OutlierDetection {
 
 	private int[][] table;
 	private Punto[] ri;
+	private ArrayList<Integer> inlier = new ArrayList<Integer>(); 
 
 	public OutlierDetection(DatabaseHelper2 databaseHelper2, WifiManager wifi) {
 		super();
 		this.databaseHelper2 = databaseHelper2;
 		this.wifi = wifi;
-		row2 = new NewRowDatabase();
 		setup();
 	}
 
@@ -84,6 +84,25 @@ public class OutlierDetection {
 		map();
 		calculateTheCenter();
 
+	}
+
+	public void ordinaMac() {
+		int size = s.size();
+		for (int i = 0; i < size; i++) {
+			for (int j = i + 1; j < size; j++) {
+				String mac1 = s.get(i).getMac();
+				String mac2 = s.get(j).getMac();
+
+				if (mac2.compareTo(mac1) < 0) {
+					Potenza potenzai = s.get(i);
+					Potenza potenzaj = s.get(j);
+					s.set(i, potenzaj);
+					s.set(j, potenzai);
+				}
+			}
+		}
+
+		Log.e(TAG + "  ordina	", s.toString());
 	}
 
 	public void map() {
@@ -156,26 +175,8 @@ public class OutlierDetection {
 		return 0;
 	}
 
-	public void ordinaMac() {
-		int size = s.size();
-		for (int i = 0; i < size; i++) {
-			for (int j = i + 1; j < size; j++) {
-				String mac1 = s.get(i).getMac();
-				String mac2 = s.get(j).getMac();
-
-				if (mac2.compareTo(mac1) < 0) {
-					Potenza potenzai = s.get(i);
-					Potenza potenzaj = s.get(j);
-					s.set(i, potenzaj);
-					s.set(j, potenzai);
-				}
-			}
-		}
-
-		Log.e(TAG + "  ordina	", s.toString());
-	}
-
 	public void calculateTheCenter() {
+		// TODO da testare 
 		ri = new Punto[n];
 		Punto punto;
 		float x = 0;
@@ -187,12 +188,43 @@ public class OutlierDetection {
 					punto = databaseHelper2.queryPunto(table[n_row][nColumn]);
 					x += punto.getX();
 					y += punto.getY();
-				} else {
-
 				}
 			}
-			ri[nColumn] = new Punto(x, y);
+			ri[nColumn] = new Punto(x / (float) q, y / (float) q);
 		}
+	}
+
+	public void algorithmOutlier() {
+		int w;
+		float d;
+		int count = 0;
+
+		if (n % 2 == 0) {
+			w = n / 2;
+		} else {
+			w = (n + 1) / 2;
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n && j!=i; j++) {
+				
+				d = (float) Math
+						.sqrt(((ri[i].getX() - ri[j].getX()) * (ri[i].getX() - ri[j]
+								.getX()))
+								+ ((ri[i].getY() - ri[j].getY()) * (ri[i]
+										.getY() - ri[j].getY())));
+
+				if (d <= T) {
+					count++;
+				}
+			}
+			
+			if(count >= w){
+				inlier.add(i);
+			}
+            count = 0;
+		}
+
 	}
 
 	public ArrayList<Potenza> getS() {
