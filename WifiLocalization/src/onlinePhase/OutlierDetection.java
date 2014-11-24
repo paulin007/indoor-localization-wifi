@@ -21,7 +21,7 @@ public class OutlierDetection {
 	private WifiManager wifi;
 
 	private TreeSet<String> nmacs = new TreeSet<String>();
-	private ArrayList<String> listOfMacs = new ArrayList<String>();
+	private ArrayList<String> listOfMacs = new ArrayList<String>(); // list of all mac present
 	private ArrayList<Potenza> s = new ArrayList<Potenza>(); // signal received
 																// by the tag
 	private String[] columnsLevels = new String[100];
@@ -52,9 +52,8 @@ public class OutlierDetection {
 			listOfMacs.add((String) iter.next());
 		}
 
-//		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
-		//
-		// Log.e(TAG+"getNumMac is sorted ?", nmacs.toString());
+		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
+		
 
 		return nmacs.size();
 	}
@@ -77,38 +76,9 @@ public class OutlierDetection {
 //		}
 
 		// just for test
-		 s.add(new Potenza("b4:c7:99:e6:ac:21", -62));
-		 s.add(new Potenza("b4:c7:99:e6:8c:e0", -78));
-		 s.add(new Potenza("b4:c7:99:e6:8c:e1", -78));	 
-		 s.add(new Potenza("00:1f:33:25:53:fe", -83));
-		 s.add(new Potenza("b4:c7:99:e6:47:e0", -80));
-		 s.add(new Potenza("b4:c7:99:e6:1c:21", -65));
-		 s.add(new Potenza("b4:c7:99:e6:1c:20", -71));
-		 s.add(new Potenza("b4:c7:99:e6:ac:20", -80));
-		 s.add(new Potenza("00:1e:e5:8c:87:da", -71));
-		 s.add(new Potenza("b4:c7:99:e6:47:e1", -78));
-		 s.add(new Potenza("74:ea:3a:eb:13:e8", -71));
-		 s.add(new Potenza("fc:0a:81:b6:bc:20", -74));
-		 s.add(new Potenza("00:0c:42:61:07:24", -83));
-		 s.add(new Potenza("fc:0a:81:b6:bc:21", -80));
-		 s.add(new Potenza("10:9a:dd:82:a6:e2", -85));
-		 s.add(new Potenza("fc:0a:81:14:66:90", -83));
-		 s.add(new Potenza("5c:96:9d:6b:07:79", -86));
-		 s.add(new Potenza("fc:0a:81:14:66:91", -89)); 
-		 s.add(new Potenza("fc:0a:81:b6:9c:e0", -88));
-		 s.add(new Potenza("fc:0a:81:b6:9c:e1", -88));
-		 s.add(new Potenza("e8:8d:28:5b:71:af", -89));
-		 s.add(new Potenza("a2:be:05:5e:de:7d", -83));
-		 s.add(new Potenza("6c:70:9f:de:51:2e", -86));
-		 s.add(new Potenza("b4:c7:99:e6:40:60", -88));
-		 s.add(new Potenza("b4:c7:99:e6:40:61", -87));
-		 s.add(new Potenza("64:66:b3:45:63:84", -83));
-		 s.add(new Potenza("38:22:9d:f3:c0:1b", -89));
-		 s.add(new Potenza("5c:96:9d:69:96:5f", -86));
-		 s.add(new Potenza("24:a2:e1:eb:1a:42", -83));
-		 s.add(new Potenza("fc:0a:81:b6:bf:90", -86));
-		 s.add(new Potenza("5c:96:9d:6b:17:37", -89));
-		 s.add(new Potenza("9e:75:e3:af:c5:0b", -83));
+		 s.add(new Potenza("c", -87));
+		 s.add(new Potenza("a", -90));
+		
 	
 		ordinaMac();
 		map();
@@ -135,7 +105,7 @@ public class OutlierDetection {
 			}
 		}
 
-//		Log.e(TAG + "  ordina	", s.toString());
+		Log.e(TAG + "  ordinaMac	", s.toString());
 	}
 
 	public void map() {
@@ -154,6 +124,9 @@ public class OutlierDetection {
 						listOfMacs.get(nColumn),
 						columnsLevels[Math.abs(currentLevel)]);
 
+				Log.e(TAG+"map", "select rp where bssid = "+listOfMacs.get(nColumn)+"  orderby : "+columnsLevels[Math.abs(currentLevel)]);
+				Log.e(TAG+"map"+"list idrp sorted ", listId_rpSorted.toString());
+				
 //				Log.e(TAG + " if map  column num "+nColumn, listId_rpSorted.toString());
 
 			} else {
@@ -221,12 +194,21 @@ public class OutlierDetection {
 			for (int n_row = 0; n_row < q; n_row++) {
 				if (table[n_row][nColumn] != 0) {
 					punto = databaseHelper2.queryPunto(table[n_row][nColumn]);
+					Log.e(TAG+" calculateCenter ", "select x , y distinct where rp = "+table[n_row][nColumn]);
+					Log.e(TAG+" calculateCenter ", punto.toString());
 					x += punto.getX();
 					y += punto.getY();
 				}
 			}
 			ri[nColumn] = new Punto(x / (float) q, y / (float) q);
+		   x=0; y=0;
 		}
+		
+		//just for test
+		for (int i = 0; i < ri.length; i++) {
+			Log.e(TAG+" calculateCenter ", "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
+		}
+		
 	}
 
 	public void algorithmOutlier() {
@@ -241,7 +223,7 @@ public class OutlierDetection {
 		}
        
 		
-		w = 15;
+
 		
 		
 		for (int i = 0; i < n; i++) {
