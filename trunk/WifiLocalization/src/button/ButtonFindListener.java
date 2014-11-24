@@ -7,9 +7,7 @@ import android.view.View.OnClickListener;
 public class ButtonFindListener implements OnClickListener{
 
 	private OutlierDetection outlierDetection;
-	
-	
-	
+
 	
 	public ButtonFindListener(OutlierDetection outlierDetection) {
 		super();
