@@ -1,6 +1,19 @@
 package model;
 
+import java.util.ArrayList;
+
+/**
+ * this class can contain every elements of the row 
+ * of the new DataBase
+ * @author paulintchonin
+ *
+ */
+
 public class NewRowDatabase {
+	
+//	private static int STARTING = 90;
+//	private static int ENDING = 22;
+	
 
 	private int id;
 	
@@ -9,18 +22,22 @@ public class NewRowDatabase {
 	private float y;
 
 	private int id_rp;
+	
+	private String ssid;
 
 	private String bssid;
 
 	private double C90, C88, C86, C84, C82, C80, C78, C76, C74, C72, C70, C68,
 			C66, C64, C62, C60, C58, C56, C54, C52, C50, C48, C46, C44, C42,
 			C40, C38, C36, C34, C32, C30, C28, C26, C24, C22;
+	
+//	private ArrayList<Column> columns = new ArrayList<Column>();
 
 	public NewRowDatabase() {
 
 	}
 
-	public NewRowDatabase(int id,float x, float y, int id_rp, String bssid,
+	public NewRowDatabase(int id,float x, float y, int id_rp,String ssid, String bssid,
 			double c90, double c88, double c86, double c84, double c82,
 			double c80, double c78, double c76, double c74, double c72,
 			double c70, double c68, double c66, double c64, double c62,
@@ -33,6 +50,7 @@ public class NewRowDatabase {
 		this.x = x;
 		this.y = y;
 		this.id_rp = id_rp;
+		this.ssid = ssid;
 		this.bssid = bssid;
 		this.C90 = c90;
 		this.C88 = c88;
@@ -71,6 +89,20 @@ public class NewRowDatabase {
 		this.C22 = c22;
 	}
 
+	
+//	private void createColumn(){
+//		for (int i = STARTING; i > ENDING; i++) {
+//			columns.add(new Column("c"+i+"_"+(i-1)));
+//		}
+//	}
+//	
+//	private void setProbabily(ArrayList<Double> probabilities){
+//		for (int i = 0; i < probabilities.size(); i++) {
+//			columns.get(i).setProbability(probabilities.get(i)) ;
+//		}	
+//	}
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -101,6 +133,14 @@ public class NewRowDatabase {
 
 	public void setId_rp(int id_rp) {
 		this.id_rp = id_rp;
+	}
+	
+	public String getSsid() {
+		return ssid;
+	}
+	
+	public void setSsid(String ssid) {
+		this.ssid = ssid;
 	}
 
 	public String getBssid() {

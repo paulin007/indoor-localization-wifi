@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
-
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -14,7 +13,7 @@ public class OutlierDetection {
 
 	private final static String TAG = OutlierDetection.class.getName();
 	private final static int q = 2;
-	private final static float T = 2; // set to 5 meter
+	private final static float T = 200; // set to 5 meter
 
 	private DatabaseHelper2 databaseHelper2;
 	private int n;// number of access point
@@ -25,12 +24,13 @@ public class OutlierDetection {
 	private ArrayList<String> listOfMacs = new ArrayList<String>();
 	private ArrayList<Potenza> s = new ArrayList<Potenza>(); // signal received
 																// by the tag
-
 	private String[] columnsLevels = new String[100];
 
 	private int[][] table;
 	private Punto[] ri;
 	private ArrayList<Integer> inlier = new ArrayList<Integer>(); 
+	
+	private SelectionPoints selectionPoints;
 
 	public OutlierDetection(DatabaseHelper2 databaseHelper2, WifiManager wifi) {
 		super();
@@ -41,7 +41,7 @@ public class OutlierDetection {
 
 	public int getNumberOfMac() {
 		int n = databaseHelper2.getNumberOfRow();
-		// Log.e(TAG, " num ="+databaseHelper2.getNumberOfRow()+"  "+n );
+		 Log.e(TAG, " numRowDataBase2 ="+n );
 		for (int i = 1; i < n + 1; i++) {
 			nmacs.add(databaseHelper2.getRow2(i).getBssid());
 		}
@@ -52,7 +52,7 @@ public class OutlierDetection {
 			listOfMacs.add((String) iter.next());
 		}
 
-		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
+//		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
 		//
 		// Log.e(TAG+"getNumMac is sorted ?", nmacs.toString());
 
@@ -68,21 +68,54 @@ public class OutlierDetection {
 		// TODO da mettere in un altro posto
 		n = getNumberOfMac();
 		m = getNumberOfRP();
+		Log.e(TAG, "numberMac = "+ n+" numberRP = "+m);
 
-		wifi.startScan();
-		List<ScanResult> results = wifi.getScanResults();
-		for (ScanResult result : results) {
-			s.add(new Potenza(result.BSSID, result.level));
-		}
+//		wifi.startScan();
+//		List<ScanResult> results = wifi.getScanResults();
+//		for (ScanResult result : results) {
+//			s.add(new Potenza(result.BSSID, result.level));
+//		}
 
 		// just for test
-		// s.add(new Potenza("n", -90));
-		// s.add(new Potenza("a", -90));
-		// s.add(new Potenza("c", -87));
-
+		 s.add(new Potenza("b4:c7:99:e6:ac:21", -62));
+		 s.add(new Potenza("b4:c7:99:e6:8c:e0", -78));
+		 s.add(new Potenza("b4:c7:99:e6:8c:e1", -78));	 
+		 s.add(new Potenza("00:1f:33:25:53:fe", -83));
+		 s.add(new Potenza("b4:c7:99:e6:47:e0", -80));
+		 s.add(new Potenza("b4:c7:99:e6:1c:21", -65));
+		 s.add(new Potenza("b4:c7:99:e6:1c:20", -71));
+		 s.add(new Potenza("b4:c7:99:e6:ac:20", -80));
+		 s.add(new Potenza("00:1e:e5:8c:87:da", -71));
+		 s.add(new Potenza("b4:c7:99:e6:47:e1", -78));
+		 s.add(new Potenza("74:ea:3a:eb:13:e8", -71));
+		 s.add(new Potenza("fc:0a:81:b6:bc:20", -74));
+		 s.add(new Potenza("00:0c:42:61:07:24", -83));
+		 s.add(new Potenza("fc:0a:81:b6:bc:21", -80));
+		 s.add(new Potenza("10:9a:dd:82:a6:e2", -85));
+		 s.add(new Potenza("fc:0a:81:14:66:90", -83));
+		 s.add(new Potenza("5c:96:9d:6b:07:79", -86));
+		 s.add(new Potenza("fc:0a:81:14:66:91", -89)); 
+		 s.add(new Potenza("fc:0a:81:b6:9c:e0", -88));
+		 s.add(new Potenza("fc:0a:81:b6:9c:e1", -88));
+		 s.add(new Potenza("e8:8d:28:5b:71:af", -89));
+		 s.add(new Potenza("a2:be:05:5e:de:7d", -83));
+		 s.add(new Potenza("6c:70:9f:de:51:2e", -86));
+		 s.add(new Potenza("b4:c7:99:e6:40:60", -88));
+		 s.add(new Potenza("b4:c7:99:e6:40:61", -87));
+		 s.add(new Potenza("64:66:b3:45:63:84", -83));
+		 s.add(new Potenza("38:22:9d:f3:c0:1b", -89));
+		 s.add(new Potenza("5c:96:9d:69:96:5f", -86));
+		 s.add(new Potenza("24:a2:e1:eb:1a:42", -83));
+		 s.add(new Potenza("fc:0a:81:b6:bf:90", -86));
+		 s.add(new Potenza("5c:96:9d:6b:17:37", -89));
+		 s.add(new Potenza("9e:75:e3:af:c5:0b", -83));
+	
 		ordinaMac();
 		map();
 		calculateTheCenter();
+		algorithmOutlier();
+		
+		selectionPoints = new SelectionPoints(databaseHelper2,table,inlier,m);
 
 	}
 
@@ -102,7 +135,7 @@ public class OutlierDetection {
 			}
 		}
 
-		Log.e(TAG + "  ordina	", s.toString());
+//		Log.e(TAG + "  ordina	", s.toString());
 	}
 
 	public void map() {
@@ -121,12 +154,12 @@ public class OutlierDetection {
 						listOfMacs.get(nColumn),
 						columnsLevels[Math.abs(currentLevel)]);
 
-				Log.e(TAG + " if map", listId_rpSorted.toString());
+//				Log.e(TAG + " if map  column num "+nColumn, listId_rpSorted.toString());
 
 			} else {
 				// TODO the mac (ap) currentMac is not visible by the Tag
-				Log.e(TAG + " else map", currentMac
-						+ " are not visible by a tag");
+//				Log.e(TAG + " else map", currentMac
+//						+ " are not visible by a tag");
 				continue;
 			}
 			for (int n_row = 0; n_row < m; n_row++) {
@@ -137,6 +170,8 @@ public class OutlierDetection {
 				}
 
 			}
+			
+			listId_rpSorted.clear();
 		}
 
 		// just for a Log
@@ -166,12 +201,12 @@ public class OutlierDetection {
 			// Log.e(TAG+" currentmac", currentmac);
 			// Log.e(TAG+" s("+i+") =", s.get(i).getMac());
 			if (currentmac.equals(s.get(i).getMac())) {
-				Log.e(TAG + "  findMac ", " the tag see the mac " + currentmac
-						+ " with level = " + s.get(i).getLevel());
+//				Log.e(TAG + "  findMac ", " the tag see the mac " + currentmac
+//						+ " with level = " + s.get(i).getLevel());
 				return s.get(i).getLevel();
 			}
 		}
-		Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
+//		Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
 		return 0;
 	}
 
@@ -204,10 +239,16 @@ public class OutlierDetection {
 		} else {
 			w = (n + 1) / 2;
 		}
-
+       
+		
+		w = 15;
+		
+		
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n && j!=i; j++) {
-				
+			for (int j = 0; j < n ; j++) {
+				if(j==i){
+					continue;
+				}
 				d = (float) Math
 						.sqrt(((ri[i].getX() - ri[j].getX()) * (ri[i].getX() - ri[j]
 								.getX()))
@@ -216,6 +257,7 @@ public class OutlierDetection {
 
 				if (d <= T) {
 					count++;
+//				Log.e(TAG+"algoritmo	", "i = "+i+" count = "+count);
 				}
 			}
 			
@@ -224,6 +266,8 @@ public class OutlierDetection {
 			}
             count = 0;
 		}
+		
+		Log.e(TAG+"algoritmo inlier :", inlier.toString());
 
 	}
 

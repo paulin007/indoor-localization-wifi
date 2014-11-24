@@ -1,5 +1,13 @@
 package model;
 
+/**
+ * this class can contain every elements of the row 
+ * of the old DataBase
+ * 
+ * @author paulintchonin
+ *
+ */
+
 public class RowDatabase {
 	
 	private int id;
@@ -7,31 +15,37 @@ public class RowDatabase {
 	private float x;
 
 	private float y;
-
+	
+	private int id_rp;
+	
+	private String ssid;
+	
 	private String bssid;
+	
+	private int level;
 
 	private int frequency ;
-
-	private int level;
 
 	private Long timestamp;
 
 	private int channel ;
 
+	public RowDatabase(int id, float x, float y,int id_rp,String ssid, String bssid, int level) {
+		super();
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.id_rp= id_rp;
+		this.ssid=ssid;
+		this.bssid = bssid;
+		this.level = level;
+	}
 	
 	public RowDatabase (){
 		
 	}
 	
 	
-	public RowDatabase(int id, float x, float y, String bssid, int level) {
-		super();
-		this.id = id;
-		this.x = x;
-		this.y = y;
-		this.bssid = bssid;
-		this.level = level;
-	}
 
 	public int getId() {
 		return id;
@@ -55,6 +69,14 @@ public class RowDatabase {
 
 	public void setY(float y) {
 		this.y = y;
+	}
+	
+	public int getId_rp() {
+		return id_rp;
+	}
+	
+	public void setId_rp(int id_rp) {
+		this.id_rp = id_rp;
 	}
 
 	public String getBssid() {
@@ -96,11 +118,19 @@ public class RowDatabase {
 	public void setChannel(int channel) {
 		this.channel = channel;
 	}
+	
+	public String getSsid() {
+		return ssid;
+	}
+	
+	public void setSsid(String ssid) {
+		this.ssid = ssid;
+	}
 
 	@Override
 	public String toString() {
 		
-		return " x : "+ x+" y : "+y+" "+"bssid : "+bssid+"  potenza : "+level;
+		return " x : "+ x+" y : "+y+" "+" id_rp : "+ id_rp+" ssid : "+ssid+" bssid : "+bssid+"  potenza : "+level;
 	}
 
 }

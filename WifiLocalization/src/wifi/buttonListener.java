@@ -14,7 +14,7 @@ public class buttonListener implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
-	Log.e("buttonListe", "button");
+//	Log.e("buttonListe", "button");
 		if(flag==0){
 			WifiView.isCircle=true;
 			flag = 1;
