@@ -7,11 +7,11 @@ import android.util.Log;
 public class ManagerDataBase {
 
 	String TAG = "ManagerDataBase - ";
-	private ArrayList<RowDatabase> elements_Of_RP = new ArrayList<RowDatabase>();
-	private ArrayList<NewRowDatabase> macs_RP = new ArrayList<NewRowDatabase>();
+	private ArrayList<RowDatabase> rowsCurrentRP = new ArrayList<RowDatabase>(); // all elements of the one RP (old database) there can be some mac duplicate
+	private ArrayList<NewRowDatabase> rowsRPforNewDataBase = new ArrayList<NewRowDatabase>();  // all elements of the one RP (new database) no duplicate mac 
 
 	private final static int MAX = 100;
-	private int[] levels = new int[MAX];
+	private int[] levels = new int[MAX]; 
 
 	private int id_rp = 1;
 
@@ -22,71 +22,72 @@ public class ManagerDataBase {
 	public ManagerDataBase() {
 		super();
 	}
+	
 
-	public ArrayList<RowDatabase> getElements_Of_RP() {
-		return elements_Of_RP;
+	public ArrayList<RowDatabase> getRowsCurrentRP() {
+		return rowsCurrentRP;
 	}
 
-	public void setElements_Of_RP(ArrayList<RowDatabase> elements_Of_RP) {
-		macs_RP.clear();
+	public void setRowsCurrentRP(ArrayList<RowDatabase> rowsCurrentRP) {
+		rowsRPforNewDataBase.clear();
 		clean();
-		this.elements_Of_RP = elements_Of_RP;
-		ordina();
+		this.rowsCurrentRP = rowsCurrentRP;
+		this.rowsCurrentRP = ordina(rowsCurrentRP);
 		manipolation();
 	}
 
-	private void ordina() {
-		int size = elements_Of_RP.size();
+	public ArrayList<RowDatabase> ordina(ArrayList<RowDatabase> rowsCurrentRP) {
+		int size = rowsCurrentRP.size();
 		for (int i = 0; i < size; i++) {
 			for (int j = i + 1; j < size; j++) {
-				String mac1 = elements_Of_RP.get(i).getBssid();
-				String mac2 = elements_Of_RP.get(j).getBssid();
+				String mac1 = rowsCurrentRP.get(i).getBssid();
+				String mac2 = rowsCurrentRP.get(j).getBssid();
 				
 				if (mac2.compareTo(mac1) < 0) {
 
-					RowDatabase rowi = elements_Of_RP.get(i);
-					RowDatabase rowj = elements_Of_RP.get(j);
-					elements_Of_RP.set(i, rowj);
-					elements_Of_RP.set(j, rowi);
+					RowDatabase rowi = rowsCurrentRP.get(i);
+					RowDatabase rowj = rowsCurrentRP.get(j);
+					rowsCurrentRP.set(i, rowj);
+					rowsCurrentRP.set(j, rowi);
 				}
 			}
 		}
-
+         return rowsCurrentRP;
 //		 Log.e("manager.ordina", elements_Of_RP.toString());
 	}
 
 	public void manipolation() {
 		String currentMac = "";
 
-		if (elements_Of_RP.size() != 0) {
-			currentMac = elements_Of_RP.get(0).getBssid();
-			trainingData = elements_Of_RP.size();
+		if (rowsCurrentRP.size() != 0) {
+			currentMac = rowsCurrentRP.get(0).getBssid();
+			trainingData = rowsCurrentRP.size();
 		}
 
-		for (int i = 0; i < elements_Of_RP.size(); i++) {
+		for (int i = 0; i < rowsCurrentRP.size(); i++) {
 
-			if (currentMac.equalsIgnoreCase(elements_Of_RP.get(i).getBssid())) {
-				levels[Math.abs(elements_Of_RP.get(i).getLevel())]++;
+			if (currentMac.equalsIgnoreCase(rowsCurrentRP.get(i).getBssid())) {
+				levels[Math.abs(rowsCurrentRP.get(i).getLevel())]++;
 
 		
-				// caso il cui nell'arraylist c'è solo un indirizzo mac
-				if (i == elements_Of_RP.size() - 1) {
+				// caso il cui nell'arraylist c'ï¿½ solo un indirizzo mac
+				if (i == rowsCurrentRP.size() - 1) {
 					addToArraylist(levels, currentMac, i);
 				}
 
 			} else {
 				addToArraylist(levels, currentMac, i);
 
-				currentMac = elements_Of_RP.get(i).getBssid();
+				currentMac = rowsCurrentRP.get(i).getBssid();
 
 				clean();
 
-				levels[Math.abs(elements_Of_RP.get(i).getLevel())]++;
+				levels[Math.abs(rowsCurrentRP.get(i).getLevel())]++;
 
 			
 				// caso in cui ci sono piu indirizzi mac nell'arraylist ma
-				// l'ultimo indirizzo è unico
-				if (i == elements_Of_RP.size() - 1) {
+				// l'ultimo indirizzo ï¿½ unico
+				if (i == rowsCurrentRP.size() - 1) {
 					addToArraylist(levels, currentMac, i);
 				}
 			}
@@ -105,8 +106,8 @@ public class ManagerDataBase {
 		
 
 		if (trainingData != 0) {
-			macs_RP.add(new NewRowDatabase(elements_Of_RP.get(index).getId(),elements_Of_RP.get(index).getX(),
-					elements_Of_RP.get(index).getY(), id_rp, currentMac,
+			rowsRPforNewDataBase.add(new NewRowDatabase(rowsCurrentRP.get(index).getId(),rowsCurrentRP.get(index).getX(),
+					rowsCurrentRP.get(index).getY(), id_rp,rowsCurrentRP.get(index).getSsid(), currentMac,
 					(double) (levels[90] + levels[89]) / trainingData,
 					(double) (levels[88] + levels[87]) / trainingData,
 					(double) (levels[86] + levels[85]) / trainingData,
@@ -154,8 +155,9 @@ public class ManagerDataBase {
 		}
 	}
 
-	public ArrayList<NewRowDatabase> getMacs_RP() {
-		return macs_RP;
+	
+	public ArrayList<NewRowDatabase> getRowsRPforNewDataBase() {
+		return rowsRPforNewDataBase;
 	}
 
 }

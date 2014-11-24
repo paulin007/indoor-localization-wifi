@@ -1,18 +1,19 @@
 package dataBase2;
 
-import android.content.Loader.ForceLoadContentObserver;
 import android.provider.BaseColumns;
 
 public interface WifiTable2 extends BaseColumns {
 	String TABLE_NAME = "wifiNew";
 	
-	
+	String _ID ="id";
 	
 	String X = "x";
 
 	String Y = "y";
 	
 	String ID_RP = "rp";
+	
+	String SSID = "ssid";
 
 	String BSSID = "bssid";
 	
@@ -61,7 +62,7 @@ public interface WifiTable2 extends BaseColumns {
 	
 
 
-	String[] COLUMNS = new String[] { _ID, X, Y,ID_RP, BSSID,
+	String[] COLUMNS = new String[] { _ID, X, Y,ID_RP,SSID, BSSID,
 			                           C90,C88,C86,C84,C82,
 			                           C80,C78,C76,C74,C72,
 			                           C70,C68,C66,C64,C62,

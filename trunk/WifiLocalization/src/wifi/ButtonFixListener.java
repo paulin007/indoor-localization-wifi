@@ -1,6 +1,7 @@
 package wifi;
 
 import java.util.ArrayList;
+
 import model.ManagerDataBase;
 import model.NewRowDatabase;
 import model.RowDatabase;
@@ -9,8 +10,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import dataBase.DatabaseHelper;
 import dataBase2.DatabaseHelper2;
+
+/**
+ * this class elaborate the data from the old database to 
+ * make the new one with the probability for every pssiblity RSS for 
+ * each reference point  
+ * @author paulintchonin
+ *
+ */
 
 public class ButtonFixListener implements OnClickListener {
 
@@ -43,14 +53,18 @@ public class ButtonFixListener implements OnClickListener {
 		new FixTask().execute();
 	}
 
+	/**
+	 * put data on new database for each RP
+	 * @param macs_rp
+	 */
+	
 	public void putDataOnNewDataBase(ArrayList<NewRowDatabase> macs_rp) {
 
 //		double a=0;
 		
 		for (int i = 0; i < macs_rp.size(); i++) {
 			row2 = macs_rp.get(i);
-			databaseHelper2.inserisciDatiWifi(row2.getX(), row2.getY(), id_ir,
-					row2.getBssid(), 
+			databaseHelper2.inserisciDatiWifi(row2.getX(), row2.getY(), id_ir,row2.getSsid(), row2.getBssid(), 
 					row2.getC90(),row2.getC88(),row2.getC86(),row2.getC84(),row2.getC82(),
 					row2.getC80(),row2.getC78(),row2.getC76(),row2.getC74(),row2.getC72(),
 					row2.getC70(),row2.getC68(),row2.getC66(),row2.getC64(),row2.getC62(),
@@ -68,41 +82,43 @@ public class ButtonFixListener implements OnClickListener {
 //			row2.getC30()+row2.getC28()+row2.getC26()+row2.getC24()+row2.getC22();
 		
 		}
-//		Log.e(Tag+" la proba totale = ", ""+a);
+//		Log.e(Tag, "per id_rp "+id_ir+" la proba totale = "+a);
+		
+		
 		id_ir++;
 
 	}
 
+	
 	class FixTask extends AsyncTask<Integer, Integer, Integer> {
 
 		@Override
 		protected Integer doInBackground(Integer... params) {
-
+		
 			int numberRow = databaseHelper.getNumberOfRow();
 			float currentX = -1;
 			float currentY = -1;
 
 			if (numberRow != 0) {
-				Log.e(Tag+"numberRow = ", "" + numberRow);
+//				Log.e(Tag+"numberRow = ", "" + numberRow);
 				//TODO da migliorare 
 				currentX = databaseHelper.getRow(1).getX();
 				currentY = databaseHelper.getRow(1).getY();
 			}
 
-			ArrayList<RowDatabase> rowsCurrentRP = new ArrayList<RowDatabase>();
+			ArrayList<RowDatabase> rowsCurrentRP = new ArrayList<RowDatabase>(); 
 
 			for (int i = 1; i < numberRow + 1; i++) {
 				row = databaseHelper.getRow(i);
-				// Log.e("i = ", ""+i);
-
+	
 				if (row.getX() != currentX || row.getY() != currentY) {
 					// Log.e("fix get ",
 					// "getx = "+row.getX()+" gety= "+row.getY());
 					// Log.e("fix current", "x = "+currentX+" y= "+currentY);
 
-					manager.setElements_Of_RP(rowsCurrentRP);
+					manager.setRowsCurrentRP(rowsCurrentRP);
 
-					putDataOnNewDataBase(manager.getMacs_RP());
+					putDataOnNewDataBase(manager.getRowsRPforNewDataBase());
 
 					rowsCurrentRP.clear();
 					rowsCurrentRP.add(row);
@@ -111,8 +127,8 @@ public class ButtonFixListener implements OnClickListener {
 
 					if (i == numberRow) {
 
-						manager.setElements_Of_RP(rowsCurrentRP);
-						putDataOnNewDataBase(manager.getMacs_RP());
+						manager.setRowsCurrentRP(rowsCurrentRP);
+						putDataOnNewDataBase(manager.getRowsRPforNewDataBase());
 					}
 
 				} else {
@@ -122,12 +138,16 @@ public class ButtonFixListener implements OnClickListener {
 					// "x = "+currentX+" y= "+currentY);
 					rowsCurrentRP.add(row);
 					if (i == numberRow) {
-						manager.setElements_Of_RP(rowsCurrentRP);
-						putDataOnNewDataBase(manager.getMacs_RP());
+						manager.setRowsCurrentRP(rowsCurrentRP);
+						putDataOnNewDataBase(manager.getRowsRPforNewDataBase());
 					}
 
 				}
-				publishProgress(i * numberRow);
+//				publishProgress(i * numberRow);
+			
+				//TODO 0--> getMax
+				
+				mProgressBar.setProgress((int)(((float)i/(float)numberRow)*mProgressBar.getMax()));
 			}
 
 			return null;
@@ -140,12 +160,13 @@ public class ButtonFixListener implements OnClickListener {
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			mProgressBar.setProgress(values[0]);
+//			mProgressBar.setProgress(values[0]);
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
 			mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+			
 		}
 	}
 
