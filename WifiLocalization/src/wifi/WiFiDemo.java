@@ -39,6 +39,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 	Button buttonCircle;
 	Button buttonFix;
 	Button buttonFind;
+	Button buttonSample;
 	private int mDelay = 100;
 
 	private ProgressBar mProgressBar;
@@ -57,6 +58,9 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
 		buttonCircle.setOnClickListener(new buttonListener());
 		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+		
+		buttonSample  = (Button) findViewById(R.id.buttonSample);
+		buttonSample.setOnClickListener(this);
 
 		buttonFix = (Button) findViewById(R.id.buttonFix);
 		buttonFix.setOnClickListener(new ButtonFixListener(databaseHelper,
@@ -83,6 +87,11 @@ public class WiFiDemo extends Activity implements OnClickListener {
 			new ScanTask().execute();
 		}
 
+		if(view.getId()==R.id.buttonSample){
+			wifi.startScan();
+			ResultOfScan();
+		}
+		
 	}
 
 	public void ResultOfScan() {

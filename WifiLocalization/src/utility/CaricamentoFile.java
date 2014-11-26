@@ -13,9 +13,16 @@ public class CaricamentoFile {
  
     private ArrayList<String> risultato = new ArrayList<String>();
     private BufferedReader reader;
-     
+    private String nomeFile; 
  
-    public void setSorgente(String nomeFile) {
+    public CaricamentoFile(String nomeFile) {
+		super();
+		this.nomeFile = nomeFile;
+		setSorgente(nomeFile);
+	}
+
+
+	public void setSorgente(String nomeFile) {
         risultato.clear();
         try {
             reader = new BufferedReader(new FileReader(new File(nomeFile)));

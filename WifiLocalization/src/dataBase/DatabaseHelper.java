@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
     
-	private int id_rp = 0;
+	private int id_rp = 20;
 	private float currentX = -1;
 	private float currentY = -1;
 
@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    	    currentY = y;
 		      }
 		      
-//		if (ssid.equalsIgnoreCase("eduroam")|| ssid.equalsIgnoreCase("UNIPV-WIFI")) {
+		if (ssid.equalsIgnoreCase("eduroam")|| ssid.equalsIgnoreCase("UNIPV-WIFI")) {
 			
 			ContentValues v = new ContentValues();
 			v.put(WifiTable.X, x);
@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db = this.getWritableDatabase();
 
 			db.insert(WifiTable.TABLE_NAME, null, v);
-//		}
+		}
 	}
 
 	@Override
