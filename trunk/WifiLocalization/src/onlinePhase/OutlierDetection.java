@@ -1,10 +1,15 @@
 package onlinePhase;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
-import android.net.wifi.ScanResult;
+
+import utility.CaricamentoFile;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import dataBase2.DatabaseHelper2;
@@ -21,16 +26,20 @@ public class OutlierDetection {
 	private WifiManager wifi;
 
 	private TreeSet<String> nmacs = new TreeSet<String>();
-	private ArrayList<String> listOfMacs = new ArrayList<String>(); // list of all mac present
+	private ArrayList<String> listOfMacs = new ArrayList<String>(); // list of
+																	// all mac
+																	// present
 	private ArrayList<Potenza> s = new ArrayList<Potenza>(); // signal received
 																// by the tag
 	private String[] columnsLevels = new String[100];
 
 	private int[][] table;
 	private Punto[] ri;
-	private ArrayList<Integer> inlier = new ArrayList<Integer>(); 
-	
+	private ArrayList<Integer> inlier = new ArrayList<Integer>();
+
 	private SelectionPoints selectionPoints;
+
+	private ArrayList<Integer> id_si = new ArrayList<Integer>();
 
 	public OutlierDetection(DatabaseHelper2 databaseHelper2, WifiManager wifi) {
 		super();
@@ -41,7 +50,7 @@ public class OutlierDetection {
 
 	public int getNumberOfMac() {
 		int n = databaseHelper2.getNumberOfRow();
-		 Log.e(TAG, " numRowDataBase2 ="+n );
+		Log.e(TAG, " numRowDataBase2 = " + n);
 		for (int i = 1; i < n + 1; i++) {
 			nmacs.add(databaseHelper2.getRow2(i).getBssid());
 		}
@@ -52,8 +61,8 @@ public class OutlierDetection {
 			listOfMacs.add((String) iter.next());
 		}
 
-		Log.e(TAG + " getNumMac, listOfMacs is sorted ?", listOfMacs.toString());
-		
+		// Log.e(TAG + " getNumMac, listOfMacs is sorted ?",
+		// listOfMacs.toString());
 
 		return nmacs.size();
 	}
@@ -67,26 +76,44 @@ public class OutlierDetection {
 		// TODO da mettere in un altro posto
 		n = getNumberOfMac();
 		m = getNumberOfRP();
-		Log.e(TAG, "numberMac = "+ n+" numberRP = "+m);
+		Log.e(TAG, "numberMac = " + n + " numberRP = " + m);
 
-//		wifi.startScan();
-//		List<ScanResult> results = wifi.getScanResults();
-//		for (ScanResult result : results) {
-//			s.add(new Potenza(result.BSSID, result.level));
-//		}
+		// wifi.startScan();
+		// List<ScanResult> results = wifi.getScanResults();
+		// for (ScanResult result : results) {
+		// s.add(new Potenza(result.BSSID, result.level));
+		// }
 
-		// just for test
-		 s.add(new Potenza("c", -87));
-		 s.add(new Potenza("a", -90));
-		
-	
+		// just for test with database a b c
+		// s.add(new Potenza("c", -87));
+		// s.add(new Potenza("a", -90));
+
+		loadSample();
+
 		ordinaMac();
 		map();
 		calculateTheCenter();
 		algorithmOutlier();
-		
-		selectionPoints = new SelectionPoints(databaseHelper2,table,inlier,m);
 
+		selectionPoints = new SelectionPoints(databaseHelper2, table, inlier, m);
+
+	}
+
+	// just for test
+	public void loadSample() {
+		CaricamentoFile file = new CaricamentoFile("/mnt/sdcard/sample.txt");
+		for (int i = 0; i < file.getRisultato().size(); i++) {
+			StringTokenizer st = new StringTokenizer(file.getRisultato().get(i));
+
+			while (st.hasMoreTokens()) {
+				Potenza potenza = new Potenza(st.nextToken(),
+						Integer.parseInt(st.nextToken()));
+				s.add(potenza);
+			}
+
+		}
+
+		// Log.e(TAG+" loadSample no order", s.toString());
 	}
 
 	public void ordinaMac() {
@@ -105,7 +132,7 @@ public class OutlierDetection {
 			}
 		}
 
-		Log.e(TAG + "  ordinaMac	", s.toString());
+		// Log.e(TAG + "  ordinaMac	", s.toString());
 	}
 
 	public void map() {
@@ -120,19 +147,27 @@ public class OutlierDetection {
 			currentMac = listOfMacs.get(nColumn);
 			currentLevel = findMacOnReceivedSignal(currentMac);
 			if (currentLevel != 0) {
+				
+//				Log.e(TAG + "  map ", " the tag see the mac id= " + nColumn
+//						+ " : " + currentMac + " with level = " + currentLevel);
+
+				id_si.add(nColumn);
 				listId_rpSorted = databaseHelper2.query(columns,
 						listOfMacs.get(nColumn),
 						columnsLevels[Math.abs(currentLevel)]);
 
-				Log.e(TAG+"map", "select rp where bssid = "+listOfMacs.get(nColumn)+"  orderby : "+columnsLevels[Math.abs(currentLevel)]);
-				Log.e(TAG+"map"+"list idrp sorted ", listId_rpSorted.toString());
-				
-//				Log.e(TAG + " if map  column num "+nColumn, listId_rpSorted.toString());
+				// Log.e(TAG+"map",
+				// "select rp where bssid = "+listOfMacs.get(nColumn)+"  orderby : "+columnsLevels[Math.abs(currentLevel)]);
+				// Log.e(TAG+"map"+"list idrp sorted ",
+				// listId_rpSorted.toString());
+
+				// Log.e(TAG + " if map  column num "+nColumn,
+				// listId_rpSorted.toString());
 
 			} else {
 				// TODO the mac (ap) currentMac is not visible by the Tag
-//				Log.e(TAG + " else map", currentMac
-//						+ " are not visible by a tag");
+				// Log.e(TAG + " else map", currentMac
+				// + " are not visible by a tag");
 				continue;
 			}
 			for (int n_row = 0; n_row < m; n_row++) {
@@ -143,19 +178,67 @@ public class OutlierDetection {
 				}
 
 			}
-			
+
 			listId_rpSorted.clear();
 		}
 
 		// just for a Log
-		// Log.e(TAG+"the map table", table.toString());
-		// for (int j = 0; j < n; j++)
-		// for (int row = 0; row < m; row++) {
-		// {
-		// Log.e(TAG, ""+table[row][j]);
-		// }
-		// }
+//		writeIntoFile();
 
+	}
+
+	private void writeIntoFile() {
+		String text="";
+        try {
+          File fileW = new File("/mnt/sdcard/table.txt");
+          BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
+         
+  		  for (int column = 0; column < n; column++) {
+//			Log.e(TAG+"map", "column = "+column+" :"+listOfMacs.get(column));
+			text +="("+column+") "+listOfMacs.get(column)+" : ";
+			for (int row = 0; row < m; row++) {
+				if(row==0 && (table[row][column]==0)){
+					continue;
+				}
+				
+				
+				if((table[row][column])!=0){
+					text += table[row][column]+" ";					
+				}		
+			}
+			output.write(text);
+			text="\n";			
+		}
+          
+      
+      
+          output.write(text);
+          output.close();
+        } catch ( IOException e ) {
+           e.printStackTrace();
+        }
+		
+		
+		
+		
+		
+		
+		Log.e(TAG + "the map table", " the map table");
+		for (int column = 0; column < n; column++) {
+			Log.e(TAG+"map", "column = "+column+" :"+listOfMacs.get(column));
+			for (int row = 0; row < m; row++) {
+				if(row==0 && (table[row][column]==0)){
+					continue;
+				}
+				
+				if((table[row][column])!=0){
+					
+					Log.e(TAG+"map", "" + table[row][column]);
+				}
+				
+				
+			}
+		}
 	}
 
 	/**
@@ -174,17 +257,19 @@ public class OutlierDetection {
 			// Log.e(TAG+" currentmac", currentmac);
 			// Log.e(TAG+" s("+i+") =", s.get(i).getMac());
 			if (currentmac.equals(s.get(i).getMac())) {
-//				Log.e(TAG + "  findMac ", " the tag see the mac " + currentmac
-//						+ " with level = " + s.get(i).getLevel());
+				// Log.e(TAG + "  findMac ", " the tag see the mac " +
+				// currentmac
+				// + " with level = " + s.get(i).getLevel());
+
 				return s.get(i).getLevel();
 			}
 		}
-//		Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
+		// Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
 		return 0;
 	}
 
 	public void calculateTheCenter() {
-		// TODO da testare 
+		// TODO da testare
 		ri = new Punto[n];
 		Punto punto;
 		float x = 0;
@@ -194,62 +279,73 @@ public class OutlierDetection {
 			for (int n_row = 0; n_row < q; n_row++) {
 				if (table[n_row][nColumn] != 0) {
 					punto = databaseHelper2.queryPunto(table[n_row][nColumn]);
-					Log.e(TAG+" calculateCenter ", "select x , y distinct where rp = "+table[n_row][nColumn]);
-					Log.e(TAG+" calculateCenter ", punto.toString());
+					// Log.e(TAG+" calculateCenter ",
+					// "select x , y distinct where rp = "+table[n_row][nColumn]);
+					// Log.e(TAG+" calculateCenter ", punto.toString());
 					x += punto.getX();
 					y += punto.getY();
 				}
 			}
 			ri[nColumn] = new Punto(x / (float) q, y / (float) q);
-		   x=0; y=0;
+			x = 0;
+			y = 0;
 		}
-		
-		//just for test
-		for (int i = 0; i < ri.length; i++) {
-			Log.e(TAG+" calculateCenter ", "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
-		}
-		
+
+		// just for test
+		// for (int i = 0; i < ri.length; i++) {
+		// Log.e(TAG+" calculateCenter ",
+		// "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
+		// }
+
 	}
 
 	public void algorithmOutlier() {
 		int w;
 		float d;
 		int count = 0;
+		int nn = s.size();
 
-		if (n % 2 == 0) {
-			w = n / 2;
+		if ((nn) % 2 == 0) {
+			w = nn / 2;
 		} else {
-			w = (n + 1) / 2;
+			w = (nn + 1) / 2;
 		}
-       
-		
 
-		
-		
+		Log.e(TAG + " algo", "w = " + w);
+
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n ; j++) {
-				if(j==i){
+			if (ri[i].getX() == 0 && ri[i].getY() == 0) {
+				continue;
+			}
+
+			for (int j = 0; j < n; j++) {
+				if (j == i) {
 					continue;
 				}
+
+				if (ri[j].getX() == 0 && ri[j].getY() == 0) {
+					continue;
+				}
+
 				d = (float) Math
 						.sqrt(((ri[i].getX() - ri[j].getX()) * (ri[i].getX() - ri[j]
 								.getX()))
 								+ ((ri[i].getY() - ri[j].getY()) * (ri[i]
 										.getY() - ri[j].getY())));
-
+				// Log.e(TAG, " i = "+i+" j = "+j+" d = "+d);
 				if (d <= T) {
 					count++;
-//				Log.e(TAG+"algoritmo	", "i = "+i+" count = "+count);
+					// Log.e(TAG+"algoritmo	", "i = "+i+" count = "+count);
 				}
 			}
-			
-			if(count >= w){
+
+			if (count >= w) {
 				inlier.add(i);
 			}
-            count = 0;
+			count = 0;
 		}
-		
-		Log.e(TAG+"algoritmo inlier :", inlier.toString());
+		Log.e(TAG + "algoritmo idsi :", id_si.toString());
+		Log.e(TAG + "algoritmo inlier :", inlier.toString());
 
 	}
 
