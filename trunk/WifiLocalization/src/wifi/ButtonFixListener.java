@@ -65,6 +65,7 @@ public class ButtonFixListener implements OnClickListener {
 		for (int i = 0; i < macs_rp.size(); i++) {
 			row2 = macs_rp.get(i);
 			databaseHelper2.inserisciDatiWifi(row2.getX(), row2.getY(), id_ir,row2.getSsid(), row2.getBssid(), 
+					row2.getC98(),row2.getC96(),row2.getC94(),row2.getC92(),
 					row2.getC90(),row2.getC88(),row2.getC86(),row2.getC84(),row2.getC82(),
 					row2.getC80(),row2.getC78(),row2.getC76(),row2.getC74(),row2.getC72(),
 					row2.getC70(),row2.getC68(),row2.getC66(),row2.getC64(),row2.getC62(),
@@ -73,7 +74,8 @@ public class ButtonFixListener implements OnClickListener {
 					row2.getC40(),row2.getC38(),row2.getC36(),row2.getC34(),row2.getC32(),
 					row2.getC30(),row2.getC28(),row2.getC26(),row2.getC24(),row2.getC22()  );
 			
-//			a+=row2.getC90()+row2.getC88()+row2.getC86()+row2.getC84()+row2.getC82()+
+//			a+=row2.getC98()+row2.getC96()+row2.getC94()+row2.getC92()+
+//			row2.getC90()+row2.getC88()+row2.getC86()+row2.getC84()+row2.getC82()+
 //			row2.getC80()+row2.getC78()+row2.getC76()+row2.getC74()+row2.getC72()+
 //			row2.getC70()+row2.getC68()+row2.getC66()+row2.getC64()+row2.getC62()+
 //			row2.getC60()+row2.getC58()+row2.getC56()+row2.getC54()+row2.getC52()+

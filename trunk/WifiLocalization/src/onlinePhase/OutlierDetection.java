@@ -18,7 +18,7 @@ public class OutlierDetection {
 
 	private final static String TAG = OutlierDetection.class.getName();
 	private final static int q = 2;
-	private final static float T = 200; // set to 5 meter
+	private final static float T = 250; // set to 5 meter
 
 	private DatabaseHelper2 databaseHelper2;
 	private int n;// number of access point
@@ -85,8 +85,8 @@ public class OutlierDetection {
 		// }
 
 		// just for test with database a b c
-		// s.add(new Potenza("c", -87));
-		// s.add(new Potenza("a", -90));
+//		 s.add(new Potenza("c", -87));
+//		 s.add(new Potenza("a", -90));
 
 		loadSample();
 
@@ -95,13 +95,14 @@ public class OutlierDetection {
 		calculateTheCenter();
 		algorithmOutlier();
 
-		selectionPoints = new SelectionPoints(databaseHelper2, table, inlier, m);
+		selectionPoints = new SelectionPoints(databaseHelper2, table, inlier,
+				m, s, columnsLevels, listOfMacs);
 
 	}
 
 	// just for test
 	public void loadSample() {
-		CaricamentoFile file = new CaricamentoFile("/mnt/sdcard/sample.txt");
+		CaricamentoFile file = new CaricamentoFile("/mnt/sdcard/26112014/sample/sample24.txt");
 		for (int i = 0; i < file.getRisultato().size(); i++) {
 			StringTokenizer st = new StringTokenizer(file.getRisultato().get(i));
 
@@ -147,9 +148,9 @@ public class OutlierDetection {
 			currentMac = listOfMacs.get(nColumn);
 			currentLevel = findMacOnReceivedSignal(currentMac);
 			if (currentLevel != 0) {
-				
-//				Log.e(TAG + "  map ", " the tag see the mac id= " + nColumn
-//						+ " : " + currentMac + " with level = " + currentLevel);
+
+				// Log.e(TAG + "  map ", " the tag see the mac id= " + nColumn
+				// + " : " + currentMac + " with level = " + currentLevel);
 
 				id_si.add(nColumn);
 				listId_rpSorted = databaseHelper2.query(columns,
@@ -183,62 +184,55 @@ public class OutlierDetection {
 		}
 
 		// just for a Log
-//		writeIntoFile();
+//		 writeIntoFile();
 
 	}
 
 	private void writeIntoFile() {
-		String text="";
-        try {
-          File fileW = new File("/mnt/sdcard/table.txt");
-          BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
-         
-  		  for (int column = 0; column < n; column++) {
-//			Log.e(TAG+"map", "column = "+column+" :"+listOfMacs.get(column));
-			text +="("+column+") "+listOfMacs.get(column)+" : ";
-			for (int row = 0; row < m; row++) {
-				if(row==0 && (table[row][column]==0)){
-					continue;
+		String text = "";
+		try {
+			File fileW = new File("/mnt/sdcard/24112014/sample/table3.txt");
+			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
+
+			for (int column = 0; column < n; column++) {
+				// Log.e(TAG+"map",
+				// "column = "+column+" :"+listOfMacs.get(column));
+				text += "(" + column + ") " + listOfMacs.get(column) + " : ";
+				for (int row = 0; row < m; row++) {
+					if (row == 0 && (table[row][column] == 0)) {
+						continue;
+					}
+
+					if ((table[row][column]) != 0) {
+						text += table[row][column] + " ";
+					}
 				}
-				
-				
-				if((table[row][column])!=0){
-					text += table[row][column]+" ";					
-				}		
+				output.write(text);
+				text = "\n";
 			}
+
 			output.write(text);
-			text="\n";			
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-          
-      
-      
-          output.write(text);
-          output.close();
-        } catch ( IOException e ) {
-           e.printStackTrace();
-        }
-		
-		
-		
-		
-		
-		
-		Log.e(TAG + "the map table", " the map table");
-		for (int column = 0; column < n; column++) {
-			Log.e(TAG+"map", "column = "+column+" :"+listOfMacs.get(column));
-			for (int row = 0; row < m; row++) {
-				if(row==0 && (table[row][column]==0)){
-					continue;
-				}
-				
-				if((table[row][column])!=0){
-					
-					Log.e(TAG+"map", "" + table[row][column]);
-				}
-				
-				
-			}
-		}
+
+//		Log.e(TAG + "the map table", " the map table");
+//		for (int column = 0; column < n; column++) {
+//			Log.e(TAG + "map",
+//					"column = " + column + " :" + listOfMacs.get(column));
+//			for (int row = 0; row < m; row++) {
+//				if (row == 0 && (table[row][column] == 0)) {
+//					continue;
+//				}
+//
+//				if ((table[row][column]) != 0) {
+//
+//					Log.e(TAG + "map", "" + table[row][column]);
+//				}
+//
+//			}
+//		}
 	}
 
 	/**
@@ -292,10 +286,10 @@ public class OutlierDetection {
 		}
 
 		// just for test
-		// for (int i = 0; i < ri.length; i++) {
-		// Log.e(TAG+" calculateCenter ",
-		// "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
-		// }
+//		 for (int i = 0; i < ri.length; i++) {
+//		 Log.e(TAG+" calculateCenter ",
+//		 "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
+//		 }
 
 	}
 
@@ -310,10 +304,12 @@ public class OutlierDetection {
 		} else {
 			w = (nn + 1) / 2;
 		}
-
+       
 		Log.e(TAG + " algo", "w = " + w);
 
 		for (int i = 0; i < n; i++) {
+			
+			// because 
 			if (ri[i].getX() == 0 && ri[i].getY() == 0) {
 				continue;
 			}
@@ -332,7 +328,7 @@ public class OutlierDetection {
 								.getX()))
 								+ ((ri[i].getY() - ri[j].getY()) * (ri[i]
 										.getY() - ri[j].getY())));
-				// Log.e(TAG, " i = "+i+" j = "+j+" d = "+d);
+//				 Log.e(TAG, " i = "+i+" j = "+j+" d = "+d);
 				if (d <= T) {
 					count++;
 					// Log.e(TAG+"algoritmo	", "i = "+i+" count = "+count);
@@ -354,6 +350,14 @@ public class OutlierDetection {
 	}
 
 	public void setup() {
+		columnsLevels[98] = "c98_97";
+		columnsLevels[97] = "c98_97";
+		columnsLevels[96] = "c96_95";
+		columnsLevels[95] = "c96_95";
+		columnsLevels[94] = "c94_93";
+		columnsLevels[93] = "c94_93";
+		columnsLevels[92] = "c92_91";
+		columnsLevels[91] = "c92_91";
 		columnsLevels[90] = "c90_89";
 		columnsLevels[89] = "c90_89";
 		columnsLevels[88] = "c88_87";

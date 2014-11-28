@@ -108,6 +108,10 @@ public class ManagerDataBase {
 		if (trainingData != 0) {
 			rowsRPforNewDataBase.add(new NewRowDatabase(rowsCurrentRP.get(index).getId(),rowsCurrentRP.get(index).getX(),
 					rowsCurrentRP.get(index).getY(), id_rp,rowsCurrentRP.get(index).getSsid(), currentMac,
+					(double) (levels[98] + levels[97]) / trainingData,
+					(double) (levels[96] + levels[95]) / trainingData,
+					(double) (levels[94] + levels[93]) / trainingData,
+					(double) (levels[92] + levels[91]) / trainingData,
 					(double) (levels[90] + levels[89]) / trainingData,
 					(double) (levels[88] + levels[87]) / trainingData,
 					(double) (levels[86] + levels[85]) / trainingData,

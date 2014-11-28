@@ -17,6 +17,12 @@ public interface WifiTable2 extends BaseColumns {
 
 	String BSSID = "bssid";
 	
+	 
+    String C98 = "c98_97";
+    String C96 = "c96_95";
+    String C94 = "c94_93";
+    String C92 = "c92_91";
+	
     String C90 = "c90_89"; 
     String C88 = "c88_87";
     String C86 = "c86_85";
@@ -62,7 +68,7 @@ public interface WifiTable2 extends BaseColumns {
 	
 
 
-	String[] COLUMNS = new String[] { _ID, X, Y,ID_RP,SSID, BSSID,
+	String[] COLUMNS = new String[] { _ID, X, Y,ID_RP,SSID, BSSID,C98,C96,C94,C92,
 			                           C90,C88,C86,C84,C82,
 			                           C80,C78,C76,C74,C72,
 			                           C70,C68,C66,C64,C62,
