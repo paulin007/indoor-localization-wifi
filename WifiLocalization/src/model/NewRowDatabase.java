@@ -27,7 +27,7 @@ public class NewRowDatabase {
 
 	private String bssid;
 
-	private double C90, C88, C86, C84, C82, C80, C78, C76, C74, C72, C70, C68,
+	private double C98, C96, C94, C92,C90, C88, C86, C84, C82, C80, C78, C76, C74, C72, C70, C68,
 			C66, C64, C62, C60, C58, C56, C54, C52, C50, C48, C46, C44, C42,
 			C40, C38, C36, C34, C32, C30, C28, C26, C24, C22;
 	
@@ -38,6 +38,7 @@ public class NewRowDatabase {
 	}
 
 	public NewRowDatabase(int id,float x, float y, int id_rp,String ssid, String bssid,
+			double c98, double c96, double c94, double c92,
 			double c90, double c88, double c86, double c84, double c82,
 			double c80, double c78, double c76, double c74, double c72,
 			double c70, double c68, double c66, double c64, double c62,
@@ -52,6 +53,10 @@ public class NewRowDatabase {
 		this.id_rp = id_rp;
 		this.ssid = ssid;
 		this.bssid = bssid;
+		this.C98 = c98;
+		this.C96 = c96;
+		this.C94 = c94;
+		this.C92 = c92;
 		this.C90 = c90;
 		this.C88 = c88;
 		this.C86 = c86;
@@ -149,6 +154,38 @@ public class NewRowDatabase {
 
 	public void setBssid(String bssid) {
 		this.bssid = bssid;
+	}
+	
+	public double getC98() {
+		return C98;
+	}
+
+	public void setC98(double c98) {
+		C98 = c98;
+	}
+
+	public double getC96() {
+		return C96;
+	}
+
+	public void setC96(double c96) {
+		C96 = c96;
+	}
+
+	public double getC94() {
+		return C94;
+	}
+
+	public void setC94(double c94) {
+		C94 = c94;
+	}
+
+	public double getC92() {
+		return C92;
+	}
+
+	public void setC92(double c92) {
+		C92 = c92;
 	}
 
 	public double getC90() {

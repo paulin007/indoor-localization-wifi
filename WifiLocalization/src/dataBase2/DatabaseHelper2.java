@@ -10,10 +10,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper2 extends SQLiteOpenHelper {
 	private static final String TAG = "DatabaseHelper2";
-	private static final String DATABASE_NAME = "/mnt/sdcard/wifiLocation2.db";
+	private static final String DATABASE_NAME = "/mnt/sdcard/26112014/wifiLocation2.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
 
@@ -66,11 +67,17 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 				+ "{37} REAL,"
 				+ "{38} REAL,"
 				+ "{39} REAL,"
-				+ "{40} REAL," + "{41} REAL);";
+				+ "{40} REAL,"
+				+ "{41} REAL,"
+				+ "{42} REAL,"
+				+ "{43} REAL,"
+				+ "{44} REAL,"
+				+ "{45} REAL);";
 
 		db.execSQL(MessageFormat.format(sql, WifiTable2.TABLE_NAME,
 				WifiTable2._ID, WifiTable2.X, WifiTable2.Y, WifiTable2.ID_RP,
-				WifiTable2.SSID, WifiTable2.BSSID, WifiTable2.C90,
+				WifiTable2.SSID, WifiTable2.BSSID,WifiTable2.C98,
+				WifiTable2.C96, WifiTable2.C94, WifiTable2.C92, WifiTable2.C90,
 				WifiTable2.C88, WifiTable2.C86, WifiTable2.C84, WifiTable2.C82,
 				WifiTable2.C80, WifiTable2.C78, WifiTable2.C76, WifiTable2.C74,
 				WifiTable2.C72, WifiTable2.C70, WifiTable2.C68, WifiTable2.C66,
@@ -84,7 +91,8 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 	}
 
 	public void inserisciDatiWifi(float x, float y, int id_rp, String ssid,
-			String bssid, double c90, double c88, double c86, double c84,
+			String bssid,double c98, double c96, double c94, double c92,
+			double c90, double c88, double c86, double c84,
 			double c82, double c80, double c78, double c76, double c74,
 			double c72, double c70, double c68, double c66, double c64,
 			double c62, double c60, double c58, double c56, double c54,
@@ -98,6 +106,10 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		v.put(WifiTable2.ID_RP, id_rp);
 		v.put(WifiTable2.SSID, ssid);
 		v.put(WifiTable2.BSSID, bssid);
+		v.put(WifiTable2.C98, c98);
+		v.put(WifiTable2.C96, c96);
+		v.put(WifiTable2.C94, c94);
+		v.put(WifiTable2.C92, c92);
 		v.put(WifiTable2.C90, c90);
 		v.put(WifiTable2.C88, c88);
 		v.put(WifiTable2.C86, c86);
@@ -166,7 +178,7 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 	private static final String BSSID = "bssid";
 
 
-	String[] COLUMNS = new String[] { KEY_ID, X, Y, ID_RP, SSID, BSSID, "c90_89",
+	String[] COLUMNS = new String[] { KEY_ID, X, Y, ID_RP, SSID, BSSID,"c98_97","c96_95","c94_93","c92_91", "c90_89",
 			"c88_87", "c86_85", "c84_83", "c82_81", "c80_79", "c78_77", "c76_75", "c74_73", "c72_71", "c70_69", "c68_67", "c66_65", "c64_63",
 			"c62_61", "c60_59", "c58_57", "c56_55", "c54_53", "c52_51", "c50_49", "c48_47", "c46_45", "c44_43", "c42_41", "c40_39", "c38_37",
 			"c36_35", "c34_33", "c32_31", "c30_29", "c28_27", "c26_25", "c24_23", "c22_21" };
@@ -219,6 +231,10 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		row2.setId_rp(Integer.parseInt(cursor.getString(i++)));
 		row2.setSsid(cursor.getString(i++));
 		row2.setBssid(cursor.getString(i++));
+		row2.setC98(Double.parseDouble(cursor.getString(i++)));
+		row2.setC96(Double.parseDouble(cursor.getString(i++)));
+		row2.setC94(Double.parseDouble(cursor.getString(i++)));
+		row2.setC92(Double.parseDouble(cursor.getString(i++)));
 		row2.setC90(Double.parseDouble(cursor.getString(i++)));
 		row2.setC88(Double.parseDouble(cursor.getString(i++)));
 		row2.setC86(Double.parseDouble(cursor.getString(i++)));
@@ -333,4 +349,39 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
 		return punto;
 	}
 
+	public double queryGetProbability(String[] column,int id_RP , String currentMac){
+		double result=0;
+//		Log.e(TAG, "column : "+column[0]+" id_rp = "+id_RP+" currentMac : "+currentMac);
+		
+		// 1. get reference to readable DB
+		SQLiteDatabase db = this.getReadableDatabase();
+		// 2. build query
+		// Cursor cursor = db.query(distinct, table, columns, selection,
+		// selectionArgs, groupBy, having, orderBy, limit, cancellationSignal)
+
+		Cursor cursor = db.query(TABLE_NAME, // a. table
+				column, // b. column names
+				"rp = ? AND bssid = ?", // c. selections
+				new String[] {Integer.toString(id_RP), currentMac }, // d. selections args
+				null, // e. group by
+				null, // f. having
+				null, // g. order by
+				null); // h. limit
+
+		// 3. if we got results get the first one
+		if (cursor != null){
+			
+			cursor.moveToFirst();
+
+			if(cursor.getCount()!=0){
+				result = Double.parseDouble(cursor.getString(0));	
+			}
+			
+		}	
+		cursor.close();
+
+		return result;
+	}
+	
+	
 }
