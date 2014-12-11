@@ -13,11 +13,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-	private static final String DATABASE_NAME = "/mnt/sdcard/24112014/wifiLocation.db";
+	private static final String DATABASE_NAME = "/mnt/sdcard/tirocino/wifiLocation.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
     
-	private int id_rp = 20;
+	private int id_rp = 40;
 	private float currentX = -1;
 	private float currentY = -1;
 

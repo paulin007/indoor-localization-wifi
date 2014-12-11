@@ -6,10 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import utility.CaricamentoFile;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import dataBase2.DatabaseHelper2;
@@ -41,6 +43,14 @@ public class OutlierDetection {
 
 	private ArrayList<Integer> id_si = new ArrayList<Integer>();
 
+//	private int numberOfScan = 1;
+
+	// private String nameLoad = "/mnt/sdcard/26112014/sample/sample3.txt";
+	// private String nameTabble = "/mnt/sdcard/04122014/table3.txt";
+
+	private String nameLoad = "/mnt/sdcard/01122014/sample1/b6.txt";
+	private String nameTabble = "/mnt/sdcard/04122014/tableb6.txt";
+
 	public OutlierDetection(DatabaseHelper2 databaseHelper2, WifiManager wifi) {
 		super();
 		this.databaseHelper2 = databaseHelper2;
@@ -49,27 +59,38 @@ public class OutlierDetection {
 	}
 
 	public int getNumberOfMac() {
-		int n = databaseHelper2.getNumberOfRow();
-		Log.e(TAG, " numRowDataBase2 = " + n);
-		for (int i = 1; i < n + 1; i++) {
-			nmacs.add(databaseHelper2.getRow2(i).getBssid());
-		}
+		// int n = databaseHelper2.getNumberOfRow();
+		// Log.e(TAG, " numRowDataBase2 = " + n);
+		// for (int i = 1; i < n + 1; i++) {
+		// nmacs.add(databaseHelper2.getRow2(i).getBssid());
+		// }
+		//
+		// Iterator iter = nmacs.iterator();
+		//
+		// while (iter.hasNext()) {
+		// listOfMacs.add((String) iter.next());
+		// }
+		//
+		// // Log.e(TAG + " getNumMac, listOfMacs is sorted ?",
+		// // listOfMacs.toString());
+		//
+		// return nmacs.size();
 
-		Iterator iter = nmacs.iterator();
+		listOfMacs = loadMacs();
+		return listOfMacs.size();
 
-		while (iter.hasNext()) {
-			listOfMacs.add((String) iter.next());
-		}
+	}
 
-		// Log.e(TAG + " getNumMac, listOfMacs is sorted ?",
-		// listOfMacs.toString());
-
-		return nmacs.size();
+	private ArrayList<String> loadMacs() {
+		CaricamentoFile file = new CaricamentoFile(
+				"/mnt/sdcard/01122014/MacsList.txt");
+		return file.getRisultato();
 	}
 
 	public int getNumberOfRP() {
-		return databaseHelper2.getRow2(databaseHelper2.getNumberOfRow())
-				.getId_rp();
+		// return databaseHelper2.getRow2(databaseHelper2.getNumberOfRow())
+		// .getId_rp();
+		return 60;
 	}
 
 	public void init() {
@@ -78,31 +99,44 @@ public class OutlierDetection {
 		m = getNumberOfRP();
 		Log.e(TAG, "numberMac = " + n + " numberRP = " + m);
 
+		 s.clear();
+		 inlier.clear();
+		 id_si.clear();
+		
 		// wifi.startScan();
 		// List<ScanResult> results = wifi.getScanResults();
 		// for (ScanResult result : results) {
+		// if (result.SSID.equalsIgnoreCase("eduroam")
+		// || result.SSID.equalsIgnoreCase("UNIPV-WIFI")) {
 		// s.add(new Potenza(result.BSSID, result.level));
 		// }
+		// }
 
-		// just for test with database a b c
-//		 s.add(new Potenza("c", -87));
-//		 s.add(new Potenza("a", -90));
+		 loadSample();
 
-		loadSample();
-
-		ordinaMac();
+		 ordinaMac();
 		map();
+
+		// just for a Log
+		// writeIntoFile();
+
 		calculateTheCenter();
 		algorithmOutlier();
 
-		selectionPoints = new SelectionPoints(databaseHelper2, table, inlier,
-				m, s, columnsLevels, listOfMacs);
+		if (inlier.size() != 0) {
+			selectionPoints = new SelectionPoints(databaseHelper2, table,
+					inlier, m, s, columnsLevels, listOfMacs);
+		} else {
+		 selectionPoints = new SelectionPoints(databaseHelper2, table,
+		 id_si, m, s, columnsLevels, listOfMacs);
+		 }
+
 
 	}
 
 	// just for test
 	public void loadSample() {
-		CaricamentoFile file = new CaricamentoFile("/mnt/sdcard/26112014/sample/sample24.txt");
+		CaricamentoFile file = new CaricamentoFile(nameLoad);
 		for (int i = 0; i < file.getRisultato().size(); i++) {
 			StringTokenizer st = new StringTokenizer(file.getRisultato().get(i));
 
@@ -138,6 +172,7 @@ public class OutlierDetection {
 
 	public void map() {
 		table = new int[m][n];
+
 		ArrayList<Integer> listId_rpSorted = new ArrayList<Integer>();
 
 		int currentLevel;
@@ -183,15 +218,12 @@ public class OutlierDetection {
 			listId_rpSorted.clear();
 		}
 
-		// just for a Log
-//		 writeIntoFile();
-
 	}
 
 	private void writeIntoFile() {
 		String text = "";
 		try {
-			File fileW = new File("/mnt/sdcard/24112014/sample/table3.txt");
+			File fileW = new File(nameTabble);
 			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
 
 			for (int column = 0; column < n; column++) {
@@ -217,22 +249,22 @@ public class OutlierDetection {
 			e.printStackTrace();
 		}
 
-//		Log.e(TAG + "the map table", " the map table");
-//		for (int column = 0; column < n; column++) {
-//			Log.e(TAG + "map",
-//					"column = " + column + " :" + listOfMacs.get(column));
-//			for (int row = 0; row < m; row++) {
-//				if (row == 0 && (table[row][column] == 0)) {
-//					continue;
-//				}
-//
-//				if ((table[row][column]) != 0) {
-//
-//					Log.e(TAG + "map", "" + table[row][column]);
-//				}
-//
-//			}
-//		}
+		// Log.e(TAG + "the map table", " the map table");
+		// for (int column = 0; column < n; column++) {
+		// Log.e(TAG + "map",
+		// "column = " + column + " :" + listOfMacs.get(column));
+		// for (int row = 0; row < m; row++) {
+		// if (row == 0 && (table[row][column] == 0)) {
+		// continue;
+		// }
+		//
+		// if ((table[row][column]) != 0) {
+		//
+		// Log.e(TAG + "map", "" + table[row][column]);
+		// }
+		//
+		// }
+		// }
 	}
 
 	/**
@@ -246,20 +278,14 @@ public class OutlierDetection {
 	 *         received by a tag but we do it to optimize this method
 	 */
 	private int findMacOnReceivedSignal(String currentmac) {
-		// TODO da provare
-		for (int i = 0; i < s.size(); i++) {
-			// Log.e(TAG+" currentmac", currentmac);
-			// Log.e(TAG+" s("+i+") =", s.get(i).getMac());
-			if (currentmac.equals(s.get(i).getMac())) {
-				// Log.e(TAG + "  findMac ", " the tag see the mac " +
-				// currentmac
-				// + " with level = " + s.get(i).getLevel());
 
-				return s.get(i).getLevel();
+			for (int i = 0; i < s.size(); i++) {
+				if (currentmac.equals(s.get(i).getMac())) {
+					return s.get(i).getLevel();
+				}
 			}
-		}
-		// Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
-		return 0;
+
+			return 0;
 	}
 
 	public void calculateTheCenter() {
@@ -286,10 +312,10 @@ public class OutlierDetection {
 		}
 
 		// just for test
-//		 for (int i = 0; i < ri.length; i++) {
-//		 Log.e(TAG+" calculateCenter ",
-//		 "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
-//		 }
+		// for (int i = 0; i < ri.length; i++) {
+		// Log.e(TAG+" calculateCenter ",
+		// "for mac : "+listOfMacs.get(i)+"  ri is :"+ri[i].toString());
+		// }
 
 	}
 
@@ -297,19 +323,29 @@ public class OutlierDetection {
 		int w;
 		float d;
 		int count = 0;
-		int nn = s.size();
+		int nn = id_si.size();
 
 		if ((nn) % 2 == 0) {
 			w = nn / 2;
 		} else {
 			w = (nn + 1) / 2;
 		}
-       
+		// w=5;
+		// senza -2 cosi:a2
+		// good: a
+		// bad : a3 a4 a5 b6
+
+		w -= 2; // con -2 cosi : a4 a5 a
+				// good: a2
+				// bad : a3
+		Log.e(TAG + " algo",
+				"size s = " + s.size() + " size id_si = " + id_si.size());
+
 		Log.e(TAG + " algo", "w = " + w);
+		Log.e(TAG + " algo", "T = " + T);
 
 		for (int i = 0; i < n; i++) {
-			
-			// because 
+
 			if (ri[i].getX() == 0 && ri[i].getY() == 0) {
 				continue;
 			}
@@ -328,21 +364,23 @@ public class OutlierDetection {
 								.getX()))
 								+ ((ri[i].getY() - ri[j].getY()) * (ri[i]
 										.getY() - ri[j].getY())));
-//				 Log.e(TAG, " i = "+i+" j = "+j+" d = "+d);
+				// Log.e(TAG, " i = "+i+" j = "+j+" d = "+d);
 				if (d <= T) {
 					count++;
-					// Log.e(TAG+"algoritmo	", "i = "+i+" count = "+count);
+
 				}
 			}
-
+			Log.e(TAG + "algoritmo	", "i = " + i + " count = " + count);
 			if (count >= w) {
 				inlier.add(i);
 			}
 			count = 0;
 		}
-		Log.e(TAG + "algoritmo idsi :", id_si.toString());
-		Log.e(TAG + "algoritmo inlier :", inlier.toString());
-
+		Log.e(TAG + " algoritmo idsi :", id_si.toString());
+		Log.e(TAG + " algoritmo inlier :", inlier.toString());
+			
+		
+		
 	}
 
 	public ArrayList<Potenza> getS() {

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import dataBase.DatabaseHelper;
@@ -39,6 +40,8 @@ public class ButtonFixListener implements OnClickListener {
 	int id_ir = 1;
 
 	ProgressBar mProgressBar;
+	
+	ImageView im ;
 
 	public ButtonFixListener(DatabaseHelper databaseHelper,
 			DatabaseHelper2 databaseHelper2, ProgressBar progressBar) {
@@ -46,6 +49,7 @@ public class ButtonFixListener implements OnClickListener {
 		this.databaseHelper = databaseHelper;
 		this.databaseHelper2 = databaseHelper2;
 		this.mProgressBar = progressBar;
+	   
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class ButtonFixListener implements OnClickListener {
 	
 	public void putDataOnNewDataBase(ArrayList<NewRowDatabase> macs_rp) {
 
-//		double a=0;
+		double a=0;
 		
 		for (int i = 0; i < macs_rp.size(); i++) {
 			row2 = macs_rp.get(i);
@@ -74,17 +78,17 @@ public class ButtonFixListener implements OnClickListener {
 					row2.getC40(),row2.getC38(),row2.getC36(),row2.getC34(),row2.getC32(),
 					row2.getC30(),row2.getC28(),row2.getC26(),row2.getC24(),row2.getC22()  );
 			
-//			a+=row2.getC98()+row2.getC96()+row2.getC94()+row2.getC92()+
-//			row2.getC90()+row2.getC88()+row2.getC86()+row2.getC84()+row2.getC82()+
-//			row2.getC80()+row2.getC78()+row2.getC76()+row2.getC74()+row2.getC72()+
-//			row2.getC70()+row2.getC68()+row2.getC66()+row2.getC64()+row2.getC62()+
-//			row2.getC60()+row2.getC58()+row2.getC56()+row2.getC54()+row2.getC52()+
-//			row2.getC50()+row2.getC48()+row2.getC46()+row2.getC44()+row2.getC42()+
-//			row2.getC40()+row2.getC38()+row2.getC36()+row2.getC34()+row2.getC32()+
-//			row2.getC30()+row2.getC28()+row2.getC26()+row2.getC24()+row2.getC22();
+			a+=row2.getC98()+row2.getC96()+row2.getC94()+row2.getC92()+
+			row2.getC90()+row2.getC88()+row2.getC86()+row2.getC84()+row2.getC82()+
+			row2.getC80()+row2.getC78()+row2.getC76()+row2.getC74()+row2.getC72()+
+			row2.getC70()+row2.getC68()+row2.getC66()+row2.getC64()+row2.getC62()+
+			row2.getC60()+row2.getC58()+row2.getC56()+row2.getC54()+row2.getC52()+
+			row2.getC50()+row2.getC48()+row2.getC46()+row2.getC44()+row2.getC42()+
+			row2.getC40()+row2.getC38()+row2.getC36()+row2.getC34()+row2.getC32()+
+			row2.getC30()+row2.getC28()+row2.getC26()+row2.getC24()+row2.getC22();
 		
 		}
-//		Log.e(Tag, "per id_rp "+id_ir+" la proba totale = "+a);
+		Log.e(Tag, "per id_rp "+id_ir+" la proba totale = "+a);
 		
 		
 		id_ir++;
