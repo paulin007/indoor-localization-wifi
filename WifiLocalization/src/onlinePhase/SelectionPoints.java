@@ -146,7 +146,7 @@ public class SelectionPoints {
 		double max = sops[0];
 
 		for (int i = 0; i < sops.length; i++) {
-			Log.e(Tag + " findMaxSop", "sop[" + i + "] = " + sops[i]);
+//			Log.e(Tag + " findMaxSop", "sop[" + i + "] = " + sops[i]);
 			if (sops[i] > max) {
 				max = sops[i];
 				SelectedRegion = i;
@@ -244,6 +244,43 @@ public class SelectionPoints {
 		return pi;
 	}
 
+//	private void writeIntoFile() {
+//		String text = "";
+//		int n = listOfMacs.size();
+//		ArrayList<Integer> listId_rpSorted = new ArrayList<Integer>();
+//		String[] columns = new String[] { "rp" };
+//
+//		try {
+//			File fileW = new File("/mnt/sdcard/01122014/MacsList.txt");
+//			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
+//
+//			for (int nColumn = 0; nColumn < n; nColumn++) {
+//				// Log.e(TAG+"map",
+//				// "column = "+column+" :"+listOfMacs.get(column));
+//				text += "(" + nColumn + ") " + listOfMacs.get(nColumn) + " : ";
+//				String currentMac = listOfMacs.get(nColumn);
+//
+//				listId_rpSorted = databaseHelper2.query(columns,
+//						listOfMacs.get(nColumn), "rp");
+//
+//				for (int row = 0; row < listId_rpSorted.size(); row++) {
+//
+//					text += listId_rpSorted.get(row) + " ";
+//
+//				}
+//
+//				// text += currentMac;
+//				output.write(text);
+//				text = "\n";
+//			}
+//
+//			output.write(text);
+//			output.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
 	private void writeIntoFile() {
 		String text = "";
 		int n = listOfMacs.size();
@@ -251,24 +288,20 @@ public class SelectionPoints {
 		String[] columns = new String[] { "rp" };
 
 		try {
-			File fileW = new File("/mnt/sdcard/01122014/MacsList.txt");
+			File fileW = new File("/mnt/sdcard/01122014/MacsListCount.txt");
 			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
 
 			for (int nColumn = 0; nColumn < n; nColumn++) {
 				// Log.e(TAG+"map",
 				// "column = "+column+" :"+listOfMacs.get(column));
-				text += "(" + nColumn + ") " + listOfMacs.get(nColumn) + " : ";
+				text +=  nColumn +" ";
 				String currentMac = listOfMacs.get(nColumn);
 
 				listId_rpSorted = databaseHelper2.query(columns,
 						listOfMacs.get(nColumn), "rp");
 
-				for (int row = 0; row < listId_rpSorted.size(); row++) {
-
-					text += listId_rpSorted.get(row) + " ";
-
-				}
-
+				text += listId_rpSorted.size();
+				
 				// text += currentMac;
 				output.write(text);
 				text = "\n";
@@ -280,5 +313,5 @@ public class SelectionPoints {
 			e.printStackTrace();
 		}
 	}
-
+	
 }
