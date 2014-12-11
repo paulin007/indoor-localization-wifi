@@ -14,7 +14,7 @@ import android.util.Log;
 
 public class DatabaseHelper2 extends SQLiteOpenHelper {
 	private static final String TAG = "DatabaseHelper2";
-	private static final String DATABASE_NAME = "/mnt/sdcard/26112014/wifiLocation2.db";
+	private static final String DATABASE_NAME = "/mnt/sdcard/01122014/wifiLocation2.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
 

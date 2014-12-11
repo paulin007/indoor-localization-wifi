@@ -56,7 +56,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		buttonScan = (Button) findViewById(R.id.buttonScan);
 		buttonScan.setOnClickListener(this);
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
-		buttonCircle.setOnClickListener(new buttonListener());
+		buttonCircle.setOnClickListener(new ButtonCircleListener());
 		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 		
 		buttonSample  = (Button) findViewById(R.id.buttonSample);
@@ -119,12 +119,12 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		@Override
 		protected Integer doInBackground(Integer... params) {
           	
-			for (int i = 1; i < 201; i++) {
+			for (int i = 1; i < 401; i++) {
 				wifi.startScan();
 				ResultOfScan();
 				sleep();
 				// publishProgress(i * 200);
-				mProgressBar.setProgress((int)(((float)i/(float)200)*mProgressBar.getMax()));
+				mProgressBar.setProgress((int)(((float)i/(float)400)*mProgressBar.getMax()));
 			
 			}
 			return null;

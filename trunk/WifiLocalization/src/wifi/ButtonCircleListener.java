@@ -4,23 +4,26 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class buttonListener implements OnClickListener{
+public class ButtonCircleListener implements OnClickListener{
 
 	private int flag =0;
 	
-	public buttonListener() {
+	private boolean isDrawable = true;
+	
+	public ButtonCircleListener() {
 		
 	}
 	
 	@Override
 	public void onClick(View v) {
 //	Log.e("buttonListe", "button");
-		if(flag==0){
+		if(isDrawable){
 			WifiView.isCircle=true;
-			flag = 1;
-		}else if(flag==1){
+			isDrawable = false;
+		}else {
 			WifiView.isCircle=false;
-			flag=0;
+			isDrawable = true;
+			
 		}
 		
 	}

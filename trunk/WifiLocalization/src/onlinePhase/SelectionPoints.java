@@ -1,8 +1,13 @@
 package onlinePhase;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import wifi.WifiView;
 import android.util.Log;
 import dataBase2.DatabaseHelper2;
 
@@ -11,7 +16,7 @@ public class SelectionPoints {
 	private static final int N = 4;
 //	private static final int NumRegions = 10;
 	private static final int row = 4;
-	private static final int NUMBER_REGIONS = 9; //19
+	private static final int NUMBER_REGIONS = 29; //19
 
 	private DatabaseHelper2 databaseHelper2;
 	private int[][] table;
@@ -47,6 +52,7 @@ public class SelectionPoints {
 		sumOfPropability();
 		findMaxSop();
 		locationEstimation();
+//		writeIntoFile();
 	}
 
 	
@@ -109,6 +115,7 @@ public class SelectionPoints {
 		double max = sops[0];
 		
 		
+		
 		for (int i = 0; i < sops.length; i++) {
 			Log.e(Tag+" findMaxSop", "sop["+i+"] = "+sops[i]);
 			if(sops[i] > max){
@@ -121,6 +128,7 @@ public class SelectionPoints {
 		Log.e(Tag, "region : "+SelectedRegion);
 		
 	}
+	
 	
 	private int findMacOnReceivedSignal(String currentmac) {
 		// TODO da provare
@@ -159,7 +167,15 @@ public class SelectionPoints {
 		  puntoEstimate.setX(estimateX);
 		  puntoEstimate.setY(estimateY);
 		  
-		  Log.e(Tag+"locationEstimation", " x = "+puntoEstimate.getX()+"  y = "+puntoEstimate.getY());	  
+//		  WifiView.setXY(puntoEstimate.getX(), puntoEstimate.getY());
+	
+		  WifiView.estimateX = puntoEstimate.getX();
+		  WifiView.estimateY = puntoEstimate.getY();
+		  
+		  
+		  WifiView.isFind = true;
+		  
+		  Log.e(Tag+"-locationEstimation", " x = "+puntoEstimate.getX()+"  y = "+puntoEstimate.getY());	  
 	}
 	
 	public double calculateWi(int i){
@@ -172,10 +188,10 @@ public class SelectionPoints {
 		denominatore += numeratore;
 		
 		for (int j = 2; j < N +1; j++) {
-			currentId_RP = regions[i-1][SelectedRegion];
+		   currentId_RP = regions[i-1][SelectedRegion];
 		   denominatore += calculatePi(currentId_RP);
 		}
-		
+		Log.e(Tag, " i = "+i+" denominatore = "+denominatore);
 		return numeratore/denominatore;
 	}
 	
@@ -193,5 +209,43 @@ public class SelectionPoints {
 		return pi;
 	}
 	
+	
+	private void writeIntoFile() {
+		String text = "";
+		int n = listOfMacs.size();
+		ArrayList<Integer> listId_rpSorted = new ArrayList<Integer>();
+		String[] columns = new String[] { "rp" };
+		
+		try {
+			File fileW = new File("/mnt/sdcard/01122014/MacsList.txt");
+			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
+
+			for (int nColumn = 0; nColumn < n; nColumn++) {
+				// Log.e(TAG+"map",
+				// "column = "+column+" :"+listOfMacs.get(column));
+				text += "(" + nColumn + ") " + listOfMacs.get(nColumn) + " : ";
+			String	currentMac = listOfMacs.get(nColumn);
+				
+				listId_rpSorted = databaseHelper2.query(columns,
+						listOfMacs.get(nColumn),
+						"rp");
+				
+				for (int row = 0; row < listId_rpSorted.size(); row++) {
+					
+						text += listId_rpSorted.get(row) + " ";
+					
+				}
+				
+//				text += currentMac;
+				output.write(text);
+				text = "\n";
+			}
+
+			output.write(text);
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
