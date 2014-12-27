@@ -1,22 +1,22 @@
 package model;
 
-import onlinePhase.Punto;
+import onlinePhase.Point;
 
 public class ForEstimationPosition {
-	private Punto punto;
+	private Point punto;
 	private double probability;
 	
-	public ForEstimationPosition(Punto punto, double probability) {
+	public ForEstimationPosition(Point punto, double probability) {
 		super();
 		this.punto = punto;
 		this.probability = probability;
 	}
 
-	public Punto getPunto() {
+	public Point getPunto() {
 		return punto;
 	}
 
-	public void setPunto(Punto punto) {
+	public void setPunto(Point punto) {
 		this.punto = punto;
 	}
 

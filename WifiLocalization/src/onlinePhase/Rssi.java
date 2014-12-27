@@ -1,12 +1,12 @@
 package onlinePhase;
 
-public class Potenza {
+public class Rssi {
 	
 	private String mac;
 	
 	private int level;
 
-	public Potenza(String mac, int level) {
+	public Rssi(String mac, int level) {
 		super();
 		this.mac = mac;
 		this.level = level;

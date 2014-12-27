@@ -2,8 +2,6 @@ package model;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class ManagerDataBase {
 
 	String TAG = "ManagerDataBase - ";
@@ -17,13 +15,10 @@ public class ManagerDataBase {
 
 	int trainingData = 0;
 	
-	
-
 	public ManagerDataBase() {
 		super();
 	}
 	
-
 	public ArrayList<RowDatabase> getRowsCurrentRP() {
 		return rowsCurrentRP;
 	}
@@ -53,7 +48,6 @@ public class ManagerDataBase {
 			}
 		}
          return rowsCurrentRP;
-//		 Log.e("manager.ordina", elements_Of_RP.toString());
 	}
 
 	public void manipolation() {
@@ -77,13 +71,9 @@ public class ManagerDataBase {
 
 			} else {
 				addToArraylist(levels, currentMac, i);
-
 				currentMac = rowsCurrentRP.get(i).getBssid();
-
 				clean();
-
 				levels[Math.abs(rowsCurrentRP.get(i).getLevel())]++;
-
 			
 				// caso in cui ci sono piu indirizzi mac nell'arraylist ma
 				// l'ultimo indirizzo � unico
@@ -95,15 +85,6 @@ public class ManagerDataBase {
 	}
 
 	private void addToArraylist(int[] levels, String currentMac, int index) {
-
-	
-		//
-//		 Log.e(TAG+"x= "+elements_Of_RP.get(index).getX()+" y= "+elements_Of_RP.get(index).getY(),
-//		 "  trainingdata = "+trainingData);
-		//
-//		 Log.e(TAG+" macs_RP",
-//		 macs_RP.toString()+"  "+(levels[90]+levels[89])/trainingData);
-		
 
 		if (trainingData != 0) {
 			rowsRPforNewDataBase.add(new NewRowDatabase(rowsCurrentRP.get(index).getId(),rowsCurrentRP.get(index).getX(),
@@ -158,7 +139,6 @@ public class ManagerDataBase {
 			levels[i] = 0;
 		}
 	}
-
 	
 	public ArrayList<NewRowDatabase> getRowsRPforNewDataBase() {
 		return rowsRPforNewDataBase;
