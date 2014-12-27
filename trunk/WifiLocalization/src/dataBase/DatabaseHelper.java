@@ -1,8 +1,6 @@
 package dataBase;
 
 import java.text.MessageFormat;
-import java.util.LinkedList;
-import java.util.List;
 
 import model.RowDatabase;
 import android.content.ContentValues;
@@ -10,20 +8,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.os.Environment;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-	private static final String DATABASE_NAME = "/mnt/sdcard/tirocino/wifiLocation.db";
+	private static final String DATABASE_NAME = "/mnt/sdcard/abc/wifiLocation.db";
 	private static final int SCHEMA_VERSION = 1;
 	private SQLiteDatabase db = null;
-    
-	private int id_rp = 40;
+
+	private int id_rp = 0;
 	private float currentX = -1;
 	private float currentY = -1;
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, SCHEMA_VERSION);
-
 	}
 
 	@Override
@@ -35,25 +32,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "{5} TEXT NOT NULL,"
 				+ "{6} TEXT NOT NULL,"
 				+ "{7} INTEGER,"
-				+ "{8} INTEGER,"
-				+ "{9} INTEGER," + "{10} INTEGER);";
+				+ "{8} INTEGER," + "{9} INTEGER," + "{10} INTEGER);";
 
 		db.execSQL(MessageFormat.format(sql, WifiTable.TABLE_NAME,
-				WifiTable._ID, WifiTable.X, WifiTable.Y,WifiTable.ID_RP, WifiTable.SSID,
-				WifiTable.BSSID, WifiTable.Level, WifiTable.Frequency,
-				WifiTable.Timestamp, WifiTable.Channel));
+				WifiTable._ID, WifiTable.X, WifiTable.Y, WifiTable.ID_RP,
+				WifiTable.SSID, WifiTable.BSSID, WifiTable.Level,
+				WifiTable.Frequency, WifiTable.Timestamp, WifiTable.Channel));
 	}
 
-	public void inserisciDatiWifi(float x, float y, String ssid, String bssid, int level,
-			int frequency, Long timestamp, int channel) {
-		      if(currentX!=x || currentY!=y){
-		    	    id_rp++;
-		    	    currentX = x;
-		    	    currentY = y;
-		      }
-		      
-		if (ssid.equalsIgnoreCase("eduroam")|| ssid.equalsIgnoreCase("UNIPV-WIFI")) {
-			
+	public void inserisciDatiWifi(float x, float y, String ssid, String bssid,
+			int level, int frequency, Long timestamp, int channel) {
+		if (currentX != x || currentY != y) {
+			id_rp++;
+			currentX = x;
+			currentY = y;
+		}
+
+		if (ssid.equalsIgnoreCase("eduroam")
+				|| ssid.equalsIgnoreCase("UNIPV-WIFI")) {
+
 			ContentValues v = new ContentValues();
 			v.put(WifiTable.X, x);
 			v.put(WifiTable.Y, y);
@@ -90,13 +87,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String X = "x";
 
 	private static final String Y = "y";
-	
+
 	private static final String ID_RP = "rp";
 
 	private static final String SSID = "ssid";
 
 	private static final String BSSID = "bssid";
-	
+
 	private static final String Level = "level";
 
 	private static final String Frequency = "frequency";
@@ -105,12 +102,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String Channel = "channel";
 
-	String[] COLUMNS = new String[] { KEY_ID, X, Y,ID_RP, SSID, BSSID,Level, Frequency,
-			 Timestamp, Channel };
+	String[] COLUMNS = new String[] { KEY_ID, X, Y, ID_RP, SSID, BSSID, Level,
+			Frequency, Timestamp, Channel };
 
 	public RowDatabase getRow(int id) {
 		int i = 0;
-		
+
 		// 1. get reference to readable DB
 		SQLiteDatabase db = this.getReadableDatabase();
 		// 2. build query
@@ -126,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// 3. if we got results get the first one
 		if (cursor != null)
 			cursor.moveToFirst();
-		// 4. build book object
+		// 4. build row object
 		RowDatabase row = new RowDatabase();
 		row.setId(Integer.parseInt(cursor.getString(i++)));
 		row.setX(Float.parseFloat(cursor.getString(i++)));
@@ -138,21 +135,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		row.setFrequency(Integer.parseInt(cursor.getString(i++)));
 		row.setTimestamp(Long.parseLong(cursor.getString(i++)));
 		row.setChannel(Integer.parseInt(cursor.getString(i++)));
-		// Log.d("getRow(" + id + ")", row.toString());
+
+		cursor.close();
 
 		// 5. return Row
-		cursor.close();
 		return row;
 	}
 
 	public int getNumberOfRow() {
-	 int count = 0;
+		int count = 0;
 		// 1. build the query
 		String query = "SELECT * FROM " + TABLE_NAME;
 		// 2. get reference to writable DB
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(query, null);
-		// 3. go over each row, build book and add it to list
+		// 3. go over each row, build row and add it to list
 
 		if (cursor.moveToFirst()) {
 			do {
@@ -163,5 +160,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		return count;
 	}
-
 }

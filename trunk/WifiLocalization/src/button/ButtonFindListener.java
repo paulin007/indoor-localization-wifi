@@ -14,9 +14,6 @@ public class ButtonFindListener implements OnClickListener{
 		this.outlierDetection = outlierDetection;
 	}
 
-
-
-
 	@Override
 	public void onClick(View v) {
 		outlierDetection.init();

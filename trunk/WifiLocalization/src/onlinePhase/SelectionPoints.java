@@ -23,7 +23,7 @@ public class SelectionPoints {
 	private int[][] table;
 	private ArrayList<Integer> inlier;
 	private int m;
-	private ArrayList<Potenza> s;
+	private ArrayList<Rssi> s;
 	private String[] columnsLevels;
 	private ArrayList<String> listOfMacs;
 
@@ -39,7 +39,7 @@ public class SelectionPoints {
 	private TreeSet<Integer> regionsInvolved = new TreeSet<Integer>();
 
 	public SelectionPoints(DatabaseHelper2 databaseHelper2, int[][] table,
-			ArrayList<Integer> inlier, int m, ArrayList<Potenza> s,
+			ArrayList<Integer> inlier, int m, ArrayList<Rssi> s,
 			String[] columnsLevels, ArrayList<String> listOfMacs) {
 		super();
 		this.databaseHelper2 = databaseHelper2;
@@ -75,14 +75,6 @@ public class SelectionPoints {
 			}
 			offset = 2 * (nColumn + 1);
 		}
-
-		// just for logcat
-		// for (int nColumn = 0; nColumn < column; nColumn++) {
-		// for (int n_row = 0; n_row < row; n_row++) {
-		// Log.e(Tag + " fill region ", ""+regions[n_row][nColumn]);
-		// }
-		//
-		// }
 	}
 
 	public void findRpInvolved() {
@@ -112,18 +104,15 @@ public class SelectionPoints {
 		int currentLevel;
 		double sop = 0;
 
-
 		for (int nColumn = 0; nColumn < NUMBER_REGIONS; nColumn++) {
-
 			if(!regionsInvolved.contains(nColumn)){
 				continue;
 			}
 			
 			for (int nRow = 0; nRow < N; nRow++) {
 				
-				
 				currentId_RP = regions[nRow][nColumn];
-
+				
 				for (int i = 0; i < inlier.size(); i++) {
 					currentMac = listOfMacs.get(inlier.get(i));
 					currentLevel = findMacOnReceivedSignal(currentMac);
@@ -131,7 +120,6 @@ public class SelectionPoints {
 							.abs(currentLevel)] };
 					sop += databaseHelper2.queryGetProbability(columns,
 							currentId_RP, currentMac);
-
 				}
 
 			}
@@ -151,36 +139,27 @@ public class SelectionPoints {
 				max = sops[i];
 				SelectedRegion = i;
 			}
-
 		}
 
 		Log.e(Tag, "region : " + SelectedRegion);
-
 	}
 
 	private int findMacOnReceivedSignal(String currentmac) {
-		// TODO da provare
-		for (int i = 0; i < s.size(); i++) {
-			// Log.e(TAG+" currentmac", currentmac);
-			// Log.e(TAG+" s("+i+") =", s.get(i).getMac());
+	
+		for (int i = 0; i < s.size(); i++) {	
 			if (currentmac.equals(s.get(i).getMac())) {
-				// Log.e(TAG + "  findMac ", " the tag see the mac " +
-				// currentmac
-				// + " with level = " + s.get(i).getLevel());
-
 				return s.get(i).getLevel();
 			}
 		}
-		// Log.e(TAG + "  findMac ", " the tag dn't see the mac " + currentmac);
 		return 0;
 	}
 
 	public void locationEstimation() {
 
-		Punto currentPunto;
+		Point currentPunto;
 		double denominatore = 0;
 		double wi;
-		Punto puntoEstimate = new Punto(0, 0);
+		Point puntoEstimate = new Point(0, 0);
 		float estimateX = 0;
 		float estimateY = 0;
 
@@ -198,24 +177,19 @@ public class SelectionPoints {
 		puntoEstimate.setX(estimateX);
 		puntoEstimate.setY(estimateY);
 
-		// WifiView.setXY(puntoEstimate.getX(), puntoEstimate.getY());
-
 		WifiView.estimateX = puntoEstimate.getX();
 		WifiView.estimateY = puntoEstimate.getY();
 
 		WifiView.isFind = true;
-
 		Log.e(Tag + "-locationEstimation", " x = " + puntoEstimate.getX()
 				+ "  y = " + puntoEstimate.getY());
 	}
 
 	public double numeratoreWi(int i) {
 		double numeratore = 0;
-
 		int currentId_RP = regions[i - 1][SelectedRegion];
 
 		numeratore = calculatePi(currentId_RP);
-
 		return numeratore;
 	}
 
@@ -244,43 +218,7 @@ public class SelectionPoints {
 		return pi;
 	}
 
-//	private void writeIntoFile() {
-//		String text = "";
-//		int n = listOfMacs.size();
-//		ArrayList<Integer> listId_rpSorted = new ArrayList<Integer>();
-//		String[] columns = new String[] { "rp" };
-//
-//		try {
-//			File fileW = new File("/mnt/sdcard/01122014/MacsList.txt");
-//			BufferedWriter output = new BufferedWriter(new FileWriter(fileW));
-//
-//			for (int nColumn = 0; nColumn < n; nColumn++) {
-//				// Log.e(TAG+"map",
-//				// "column = "+column+" :"+listOfMacs.get(column));
-//				text += "(" + nColumn + ") " + listOfMacs.get(nColumn) + " : ";
-//				String currentMac = listOfMacs.get(nColumn);
-//
-//				listId_rpSorted = databaseHelper2.query(columns,
-//						listOfMacs.get(nColumn), "rp");
-//
-//				for (int row = 0; row < listId_rpSorted.size(); row++) {
-//
-//					text += listId_rpSorted.get(row) + " ";
-//
-//				}
-//
-//				// text += currentMac;
-//				output.write(text);
-//				text = "\n";
-//			}
-//
-//			output.write(text);
-//			output.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-
+	// just for test
 	private void writeIntoFile() {
 		String text = "";
 		int n = listOfMacs.size();

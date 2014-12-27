@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -23,7 +22,7 @@ public class WifiView extends ImageView implements OnTouchListener {
 	static float relativeX;
 	static float relativeY;
 
-	private static final String TAG = "View";
+	private static final String TAG = WifiView.class.getName();
 	// These matrices will be used to move and zoom image
 	static Matrix matrix = new Matrix();
 	Matrix savedMatrix = new Matrix();
@@ -32,7 +31,7 @@ public class WifiView extends ImageView implements OnTouchListener {
 	static final int NONE = 0;
 	static final int DRAG = 1;
 	static final int ZOOM = 2;
-	static boolean isCircle = false;
+	public static boolean isCircle = false;
 	int mode = NONE;
 
 	// Remember some things for zooming
@@ -56,7 +55,7 @@ public class WifiView extends ImageView implements OnTouchListener {
 
 	private void init() {
 
-		mPaint = new Paint(); // 3
+		mPaint = new Paint(); 
 		mPaint.setColor(0xffff0000);
 		mPaint.setStrokeWidth(6);
 
@@ -258,26 +257,5 @@ public class WifiView extends ImageView implements OnTouchListener {
 		 * posizione predetto. quindi bisogno risolvere l'equazione averli.
 		 */
 
-//		Log.e(TAG+" Relative translaction", " values[2] = "+values[2] + " values[5] = "+values[5]);
-//		Log.e(TAG+" Relative Zoom factor", " values[0] = "+values[0] + " values[4] = "+values[4]);
-		
-		// Log.e("Log value", "position Details: xPos: " + relativeX + " yPos: "
-		// + relativeY );
 	}
-
-//	public static void setXY(float x, float y) {
-//		// Get the values of the matrix
-//		float[] values = new float[9];
-//		matrix.getValues(values);
-//		
-//		estimateX = x;
-//		estimateY = y;
-//		
-//		WifiView.x = x * values[0] + values[2];
-//		WifiView.y = y * values[4] + values[5];
-//		Log.e(TAG+" setXY translation", " values[2] = "+values[2] + " values[5] = "+values[5]);
-//		Log.e(TAG+" setXY Zoom factor", " values[0] = "+values[0] + " values[4] = "+values[4]);
-//
-//	}
-
 }

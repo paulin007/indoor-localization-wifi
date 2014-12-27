@@ -1,11 +1,11 @@
 package onlinePhase;
 
-public class Punto {
+public class Point {
 	
 	private float x;
 	private float y;
 	
-	public Punto(float x, float y) {
+	public Point(float x, float y) {
 		super();
 		this.x = x;
 		this.y = y;

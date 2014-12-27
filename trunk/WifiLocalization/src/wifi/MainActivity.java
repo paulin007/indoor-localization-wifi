@@ -18,11 +18,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import button.ButtonCircle;
 import button.ButtonFindListener;
+import button.ButtonFixListener;
 import dataBase.DatabaseHelper;
 import dataBase2.DatabaseHelper2;
 
-public class WiFiDemo extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener {
 	private static final String TAG = "WiFiDemo";
 	WifiManager wifi;
 	// BroadcastReceiver receiver;
@@ -36,7 +38,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 					2452, 2457, 2462, 2467, 2472, 2484));
 
 	Button buttonScan;
-	Button buttonCircle;
+	private Button buttonCircle;
 	Button buttonFix;
 	Button buttonFind;
 	Button buttonSample;
@@ -56,7 +58,7 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		buttonScan = (Button) findViewById(R.id.buttonScan);
 		buttonScan.setOnClickListener(this);
 		buttonCircle = (Button) findViewById(R.id.buttonCircle);
-		buttonCircle.setOnClickListener(new ButtonCircleListener());
+		buttonCircle.setOnClickListener(new ButtonCircle());
 		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 		
 		buttonSample  = (Button) findViewById(R.id.buttonSample);
@@ -112,19 +114,25 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		return channelsFrequency.indexOf(Integer.valueOf(frequency));
 	}
 
-	class ScanTask extends AsyncTask<Integer, Integer, Integer> {
+	
+	/**
+	 * Make a scan every mDelay ms and make NUMBER_SCAN for every RP
+	 * @author paulintchonin
+	 *
+	 */
+	class ScanTask extends AsyncTask<Void, Void, Void> {
 
-		
-		
+		private static final int NUMBER_SCAN = 401;
+
 		@Override
-		protected Integer doInBackground(Integer... params) {
+		protected Void doInBackground(Void... params) {
           	
-			for (int i = 1; i < 401; i++) {
+			for (int i = 1; i < NUMBER_SCAN; i++) {
 				wifi.startScan();
 				ResultOfScan();
 				sleep();
-				// publishProgress(i * 200);
-				mProgressBar.setProgress((int)(((float)i/(float)400)*mProgressBar.getMax()));
+				
+				mProgressBar.setProgress((int)(((float)i/(float)NUMBER_SCAN)*mProgressBar.getMax()));
 			
 			}
 			return null;
@@ -136,21 +144,19 @@ public class WiFiDemo extends Activity implements OnClickListener {
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// mProgressBar.setProgress(values[0]);
+		protected void onProgressUpdate(Void... values) {
 		}
 
 		@Override
-		protected void onPostExecute(Integer result) {
+		protected void onPostExecute(Void result) {
 			mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-			Toast.makeText(WiFiDemo.this, "scan complete", Toast.LENGTH_LONG)
+			Toast.makeText(MainActivity.this, "scan complete", Toast.LENGTH_LONG)
 					.show();
 
 		}
 
 		private void sleep() {
 			try {
-
 				Thread.sleep(mDelay);
 			} catch (InterruptedException e) {
 				Log.e(TAG, e.toString());
