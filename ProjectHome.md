@@ -1,0 +1,1 @@
+Sviluppo di tecniche di localizzazione indoor che utilizzino i sensori tipicamente disponibili su smartphone, per individuare la posizione dell'utente in un ambiente opportunamente infrastrutturato. Tra le sorgenti di informazione previste vi e` il riconoscimento della potenza dei segnali di hotspot wireless collocati nelle vicinanze.
